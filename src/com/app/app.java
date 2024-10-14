@@ -18,8 +18,7 @@ public class app {
     public static void main(String[] args) {
 
         // importing font
-        File fontFile = new File("C:/Users/mrfoo/IdeaProjects/co2_project/src/com/app/fonts/Satoshi-Variable.ttf");
-        Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+        customFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/Satoshi-Variable.ttf")).deriveFont(24f);
 
         // making a jframe
         JFrame frame = new JFrame("Data Insertion");
