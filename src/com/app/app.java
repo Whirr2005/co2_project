@@ -31,7 +31,7 @@ public class app {
 
         //use ".setFont(Satoshi)" to set the font for example userIdLabel.setFont(Satoshi);
 
-        // making a jframe
+        // making a Jframe for the UI
         JFrame frame = new JFrame("Data Insertion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400); // Decreased frame size
@@ -52,7 +52,7 @@ public class app {
 
         JButton submitButton = new JButton("Submit");
 
-        // actually putting the componets in the window
+        // actually putting the components in the window
         frame.add(userIdLabel);
         frame.add(userIdField);
         frame.add(postcodeLabel);
@@ -72,20 +72,20 @@ public class app {
                     DataHandler.POSTCODE = postcodeField.getText();
                     DataHandler.DATA = dataField.getText();
 
-                    //check if feilds are empty
+                    //check if fields are empty
                     if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
-                        //feedback and dont save to db
+                        //feedback and don't save to db
                         JOptionPane.showMessageDialog(frame, "All fields are required");
                     }
                     else{
-                        // insert data as all feilds are full
+                        // insert data as all fields are full
                         boolean success = DatabaseConnector.insertData(DataHandler.USERID, DataHandler.POSTCODE, DataHandler.DATA);
 
-                        // pop up with resukt
+                        // pop up with result
                         if (success) {
                             JOptionPane.showMessageDialog(frame, "Data inserted successfully!");
                         } else {
-                            //somthing went wrong with inserting
+                            //something went wrong with inserting
                             JOptionPane.showMessageDialog(frame, "Error inserting data. Please try again.");
                         }
                     }
