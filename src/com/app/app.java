@@ -11,6 +11,10 @@ import com.app.config.DatabaseConnector;
 public class app {
 
     public static void main(String[] args) {
+        // init data handler
+        //DataHandler handler = new DataHandler();
+
+
         // making a jframe
         JFrame frame = new JFrame("Data Insertion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -48,18 +52,18 @@ public class app {
             public void actionPerformed(ActionEvent e) {
                 try {
                     // get input values from feilds
-                    int column1Value = Integer.parseInt(userIdField.getText());
-                    String column2Value = postcodeField.getText();
-                    String column3Value = dataField.getText();
+                    DataHandler.UserID = Integer.parseInt(userIdField.getText());
+                    DataHandler.Postcode = postcodeField.getText();
+                    DataHandler.Data = dataField.getText();
 
                     //check if feilds are empty
-                    if (column2Value.isEmpty() || column3Value.isEmpty()) {
+                    if (DataHandler.Postcode.isEmpty() || DataHandler.Data.isEmpty()) {
                         //feedback and dont save to db
                         JOptionPane.showMessageDialog(frame, "All fields are required");
                     }
                     else{
                         // insert data as all feilds are full
-                        boolean success = DatabaseConnector.insertData(column1Value, column2Value, column3Value);
+                        boolean success = DatabaseConnector.insertData(DataHandler.UserID, DataHandler.Postcode, DataHandler.Data);
 
                         // pop up with resukt
                         if (success) {
@@ -88,4 +92,12 @@ public class app {
 
         frame.setVisible(true);
     }
+
+
+
+}
+class DataHandler {
+    static int UserID;
+    static String Postcode;
+    static String Data;
 }
