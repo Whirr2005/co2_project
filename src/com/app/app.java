@@ -1,6 +1,6 @@
 package com.app;
 
-//imports for making a windown and the elements inside said window
+//imports for making a window and the elements inside said window
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
