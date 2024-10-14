@@ -48,18 +48,18 @@ public class app {
             public void actionPerformed(ActionEvent e) {
                 try {
                     // get input values from feilds
-                    int column1Value = Integer.parseInt(userIdField.getText());
-                    String column2Value = postcodeField.getText();
-                    String column3Value = dataField.getText();
+                    DataHandler.USERID = Integer.parseInt(userIdField.getText());
+                    DataHandler.POSTCODE = postcodeField.getText();
+                    DataHandler.DATA = dataField.getText();
 
                     //check if feilds are empty
-                    if (column2Value.isEmpty() || column3Value.isEmpty()) {
+                    if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
                         //feedback and dont save to db
                         JOptionPane.showMessageDialog(frame, "All fields are required");
                     }
                     else{
                         // insert data as all feilds are full
-                        boolean success = DatabaseConnector.insertData(column1Value, column2Value, column3Value);
+                        boolean success = DatabaseConnector.insertData(DataHandler.USERID, DataHandler.POSTCODE, DataHandler.DATA);
 
                         // pop up with resukt
                         if (success) {
@@ -88,4 +88,9 @@ public class app {
 
         frame.setVisible(true);
     }
+}
+class DataHandler {
+    static int USERID;
+    static String POSTCODE;
+    static String DATA;
 }
