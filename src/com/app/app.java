@@ -7,10 +7,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 //importing the other class for insterting and connetcing
 import com.app.config.DatabaseConnector;
+//importing font
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.File;
+import java.io.IOException;
 
 public class app {
 
     public static void main(String[] args) {
+
+        // importing font
+        File fontFile = new File("C:/Users/mrfoo/IdeaProjects/co2_project/src/com/app/fonts/Satoshi-Variable.ttf");
+        Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+
         // making a jframe
         JFrame frame = new JFrame("Data Insertion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
