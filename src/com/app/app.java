@@ -17,8 +17,19 @@ public class app {
 
     public static void main(String[] args) {
 
-        // importing font
-        File fontFile = new File("C:/Users/mrfoo/IdeaProjects/co2_project/src/com/app/fonts/Satoshi-Variable.ttf");
+        // Load the custom font
+        Font Satoshi = null;
+        try {
+            // Replace "src/fonts/YourFontFile.ttf" with the actual path inside your project
+            Satoshi = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/Satoshi-Variable.ttf")).deriveFont(24f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Satoshi);
+        } catch (FontFormatException | IOException e) {
+            // Catch both FontFormatException and IOException
+            e.printStackTrace();
+        }
+
+        //use ".setFont(Satoshi)" to set the font for example userIdLabel.setFont(Satoshi);
 
         // making a jframe
         JFrame frame = new JFrame("Data Insertion");
@@ -30,7 +41,7 @@ public class app {
         frame.setLayout(new GridLayout(4, 2)); // 4 rows, 2 columns
 
         // adding entry boxes in the window
-        JLabel userIdLabel = new JLabel("Enter user_id (integer): ");
+        JLabel userIdLabel = new JLabel("Enter your ID): ");
         JTextField userIdField = new JTextField();
 
         JLabel postcodeLabel = new JLabel("Enter postcode: ");
