@@ -14,7 +14,10 @@ public class app {
         // making a jframe
         JFrame frame = new JFrame("Data Insertion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200); //change to a larger mobible style suze and orientatoin
+        frame.setSize(600, 400); // Decreased frame size
+        frame.setLocationRelativeTo(null); // Centers the frame on the screen
+        frame.setVisible(true);
+        frame.setResizable(false);
         frame.setLayout(new GridLayout(4, 2)); // 4 rows, 2 columns
 
         // adding entry boxes in the window
@@ -37,6 +40,7 @@ public class app {
         frame.add(dataLabel);
         frame.add(dataField);
         frame.add(submitButton);
+
 
         // this gets called when the submit button gets clicked in the window
         submitButton.addActionListener(new ActionListener() {
