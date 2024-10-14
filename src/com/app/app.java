@@ -19,7 +19,6 @@ public class app {
 
         // importing font
         File fontFile = new File("C:/Users/mrfoo/IdeaProjects/co2_project/src/com/app/fonts/Satoshi-Variable.ttf");
-        Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
 
         // making a jframe
         JFrame frame = new JFrame("Data Insertion");
