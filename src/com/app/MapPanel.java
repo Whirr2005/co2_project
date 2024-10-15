@@ -22,9 +22,9 @@ class MapPanel extends JPanel {
             WebView webView = new WebView();
             WebEngine webEngine = webView.getEngine();
 
-            // Load the Google Maps URL or your custom HTML file here
-            String googleMapsURL = "https://www.google.com/maps"; // Example URL
-            webEngine.load(googleMapsURL);
+            // Load the local HTML file with the Google Maps API
+            String localHtmlFile = "file:///C:/Users/mrfoo/IdeaProjects/co2_project/src/com/app/map.html";  // Adjust path
+            webEngine.load(localHtmlFile);  // Load the HTML file
 
             // Set the WebView in the JavaFX Scene
             Scene scene = new Scene(webView);
@@ -47,4 +47,3 @@ class MapPanel extends JPanel {
         newFrame.setVisible(true); // Make the frame visible
     }
 }
-
