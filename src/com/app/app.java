@@ -35,7 +35,6 @@ public class app {
         //use ".setFont(Satoshi)" to set the font for example userIdLabel.setFont(Satoshi);
 
         // making a Jframe for the UI
-        JFrame frame = new JFrame("Data Insertion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400); // Decreased frame size
         frame.setLocationRelativeTo(null); // Centers the frame on the screen
