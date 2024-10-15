@@ -19,10 +19,11 @@ public class app {
 
     public static void main(String[] args) {
 
-         JFrame frame;
-         JTextField userIdField;
-         JTextField postcodeField;
-         JTextField dataField;
+            JFrame frame;
+        final RoundedTextField userIdField = new RoundedTextField();
+        final RoundedTextField postcodeField = new RoundedTextField();
+        final RoundedTextField dataField = new RoundedTextField();
+
         // Load the custom font
         Font Satoshi = null;
         try {
@@ -49,7 +50,6 @@ public class app {
 
             JLabel userIdLabel = new JLabel("Enter User Id:");
             userIdLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Decreases font size
-            userIdField = new JTextField(15); // Decreased field size
             userIdField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             userIdField.setBackground(new Color(255, 255, 255));
             userIdField.setPreferredSize(new Dimension(200, 25)); // Decreases width
@@ -57,7 +57,6 @@ public class app {
 
             JLabel postcodeLabel = new JLabel("Enter Postcode:");
             postcodeLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Decreases font size
-            postcodeField = new JTextField(15); // Decreased field size
             postcodeField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             postcodeField.setBackground(new Color(255, 255, 255));
             postcodeField.setPreferredSize(new Dimension(200, 25)); // Decreases width
@@ -65,7 +64,6 @@ public class app {
 
             JLabel dataLabel = new JLabel("CO2 Data (kg):");
             dataLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Decreases font size
-            dataField = new JTextField(15); // Decreased field size
             dataField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             dataField.setBackground(new Color(255, 255, 255));
             dataField.setPreferredSize(new Dimension(200, 25)); // Decreases width
