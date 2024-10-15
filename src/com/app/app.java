@@ -8,6 +8,11 @@ import java.awt.event.ActionListener;
 
 //importing the other class for inserting and connecting
 import com.app.config.DatabaseConnector;
+//importing font
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.File;
+import java.io.IOException;
 
 public class app {
 
@@ -17,6 +22,18 @@ public class app {
          JTextField userIdField;
          JTextField postcodeField;
          JTextField dataField;
+        // Load the custom font
+        Font Satoshi = null;
+        try {
+            // Replace "src/fonts/YourFontFile.ttf" with the actual path inside your project
+            Satoshi = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/Satoshi-Variable.ttf")).deriveFont(24f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Satoshi);
+        } catch (FontFormatException | IOException e) {
+            // Catch both FontFormatException and IOException
+            e.printStackTrace();
+        }
+        Satoshi = Satoshi.deriveFont(18f); //set size of font to 18 as thats what aaron was using
 
             // Creates the JFrame
             frame = new JFrame("[CO2 Data Emissions Input]");
@@ -35,6 +52,12 @@ public class app {
             userIdField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             userIdField.setBackground(new Color(255, 255, 255));
             userIdField.setPreferredSize(new Dimension(200, 25)); // Decreases width
+        JLabel userIdLabel = new JLabel("Enter Employee ID: ");
+        userIdLabel.setFont(Satoshi);
+        JTextField userIdField = new JTextField(); //Defines The Field.
+        userIdField.setFont(Satoshi);
+        userIdField.setBackground(new Color(255, 255, 255));
+        userIdField.setPreferredSize(new Dimension(200,25));
 
             JLabel postcodeLabel = new JLabel("Enter Postcode:");
             postcodeLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Decreases font size
@@ -42,6 +65,12 @@ public class app {
             postcodeField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             postcodeField.setBackground(new Color(255, 255, 255));
             postcodeField.setPreferredSize(new Dimension(200, 25)); // Decreases width
+        JLabel postcodeLabel = new JLabel("Enter Postcode: ");
+        postcodeLabel.setFont(Satoshi);
+        JTextField postcodeField = new JTextField(); // Defines the field.
+        postcodeField.setFont(Satoshi);
+        postcodeField.setBackground(new Color(255,255,255));
+        postcodeField.setPreferredSize(new Dimension(200,25));
 
             JLabel dataLabel = new JLabel("CO2 Data (kg):");
             dataLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Decreases font size
@@ -51,6 +80,12 @@ public class app {
             dataField.setPreferredSize(new Dimension(200, 25)); // Decreases width
 
             // Adds Components To The Frame.
+        JLabel dataLabel = new JLabel("Enter Co2 Data (Kg): ");
+        dataLabel.setFont(new Font("Ariel",Font.BOLD,18));
+        JTextField dataField = new JTextField(); //Defines the field.
+        dataField.setFont(Satoshi);
+        dataField.setBackground(new Color(255,255,255));
+        dataField.setPreferredSize(new Dimension(200,25));
 
             JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10)); // Grid Gap
             panel.add(userIdLabel);
