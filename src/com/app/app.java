@@ -8,12 +8,34 @@ import java.awt.event.ActionListener;
 
 //importing the other class for insterting and connetcing
 import com.app.config.DatabaseConnector;
+//importing font
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.File;
+import java.io.IOException;
 
 public class app {
 
     public static void main(String[] args) {
         // Making a Jframe.
         JFrame frame = new JFrame("[CO2 Data Emissions Input]");
+
+        // Load the custom font
+        Font Satoshi = null;
+        try {
+            // Replace "src/fonts/YourFontFile.ttf" with the actual path inside your project
+            Satoshi = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/Satoshi-Variable.ttf")).deriveFont(24f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Satoshi);
+        } catch (FontFormatException | IOException e) {
+            // Catch both FontFormatException and IOException
+            e.printStackTrace();
+        }
+
+        //use ".setFont(Satoshi)" to set the font for example userIdLabel.setFont(Satoshi);
+
+        // making a Jframe for the UI
+        JFrame frame = new JFrame("Data Insertion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400); // Decreased frame size
         frame.setLocationRelativeTo(null); // Centers the frame on the screen
@@ -70,30 +92,40 @@ public class app {
         frame.getContentPane().add(Box.createVerticalStrut(20), BorderLayout.PAGE_END); // Strut Size
         frame.getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
 
+        // actually putting the components in the window
+        frame.add(userIdLabel);
+        frame.add(userIdField);
+        frame.add(postcodeLabel);
+        frame.add(postcodeField);
+        frame.add(dataLabel);
+        frame.add(dataField);
+        frame.add(submitButton);
+
+
         // this gets called when the submit button gets clicked in the window
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     // get input values from feilds
-                    int column1Value = Integer.parseInt(userIdField.getText());
-                    String column2Value = postcodeField.getText();
-                    String column3Value = dataField.getText();
+                    DataHandler.USERID = Integer.parseInt(userIdField.getText());
+                    DataHandler.POSTCODE = postcodeField.getText();
+                    DataHandler.DATA = dataField.getText();
 
-                    //check if feilds are empty
-                    if (column2Value.isEmpty() || column3Value.isEmpty()) {
-                        //feedback and dont save to db
+                    //check if fields are empty
+                    if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
+                        //feedback and don't save to db
                         JOptionPane.showMessageDialog(frame, "All fields are required");
                     }
                     else{
-                        // insert data as all feilds are full
-                        boolean success = DatabaseConnector.insertData(column1Value, column2Value, column3Value);
+                        // insert data as all fields are full
+                        boolean success = DatabaseConnector.insertData(DataHandler.USERID, DataHandler.POSTCODE, DataHandler.DATA);
 
-                        // pop up with resukt
+                        // pop up with result
                         if (success) {
                             JOptionPane.showMessageDialog(frame, "Data inserted successfully!");
                         } else {
-                            //somthing went wrong with inserting
+                            //something went wrong with inserting
                             JOptionPane.showMessageDialog(frame, "Error inserting data. Please try again.");
                         }
                     }
@@ -113,4 +145,9 @@ public class app {
 
         frame.setVisible(true);
     }
+}
+class DataHandler {
+    static int USERID;
+    static String POSTCODE;
+    static String DATA;
 }
