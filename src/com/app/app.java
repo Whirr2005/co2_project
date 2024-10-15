@@ -53,12 +53,7 @@ public class app {
             userIdField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             userIdField.setBackground(new Color(255, 255, 255));
             userIdField.setPreferredSize(new Dimension(200, 25)); // Decreases width
-        JLabel userIdLabel = new JLabel("Enter Employee ID: ");
-        userIdLabel.setFont(Satoshi);
-        JTextField userIdField = new JTextField(); //Defines The Field.
-        userIdField.setFont(Satoshi);
-
-        userIdField.setPreferredSize(new Dimension(200,25));
+            userIdLabel.setFont(Satoshi);
 
             JLabel postcodeLabel = new JLabel("Enter Postcode:");
             postcodeLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Decreases font size
@@ -66,12 +61,7 @@ public class app {
             postcodeField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             postcodeField.setBackground(new Color(255, 255, 255));
             postcodeField.setPreferredSize(new Dimension(200, 25)); // Decreases width
-        JLabel postcodeLabel = new JLabel("Enter Postcode: ");
-        postcodeLabel.setFont(Satoshi);
-        JTextField postcodeField = new JTextField(); // Defines the field.
-        postcodeField.setFont(Satoshi);
-        postcodeField.setBackground(new Color(255,255,255));
-        postcodeField.setPreferredSize(new Dimension(200,25));
+            postcodeLabel.setFont(Satoshi);
 
             JLabel dataLabel = new JLabel("CO2 Data (kg):");
             dataLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Decreases font size
@@ -79,14 +69,7 @@ public class app {
             dataField.setFont(new Font("Arial", Font.PLAIN, 18)); // Decreases font size
             dataField.setBackground(new Color(255, 255, 255));
             dataField.setPreferredSize(new Dimension(200, 25)); // Decreases width
-
-            // Adds Components To The Frame.
-        JLabel dataLabel = new JLabel("Enter Co2 Data (Kg): ");
-        dataLabel.setFont(new Font("Ariel",Font.BOLD,18));
-        JTextField dataField = new JTextField(); //Defines the field.
-        dataField.setFont(Satoshi);
-        dataField.setBackground(new Color(255,255,255));
-        dataField.setPreferredSize(new Dimension(200,25));
+            dataLabel.setFont(new Font("Ariel",Font.BOLD,18));
 
             JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10)); // Grid Gap
             panel.add(userIdLabel);
