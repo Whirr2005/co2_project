@@ -31,6 +31,7 @@ public class app {
             // Catch both FontFormatException and IOException
             e.printStackTrace();
         }
+        Satoshi = Satoshi.deriveFont(18f); //set size of font to 18 as thats what aaron was using
 
         //use ".setFont(Satoshi)" to set the font for example userIdLabel.setFont(Satoshi);
 
@@ -47,23 +48,23 @@ public class app {
         // Adding entry boxes in the window.
 
         JLabel userIdLabel = new JLabel("Enter Employee ID: ");
-        userIdLabel.setFont(new Font("Ariel", Font.BOLD, 18));
+        userIdLabel.setFont(Satoshi);
         JTextField userIdField = new JTextField(); //Defines The Field.
-        userIdField.setFont(new Font("Ariel", Font.PLAIN, 18));
+        userIdField.setFont(Satoshi);
         userIdField.setBackground(new Color(255, 255, 255));
         userIdField.setPreferredSize(new Dimension(200,25));
 
         JLabel postcodeLabel = new JLabel("Enter Postcode: ");
-        postcodeLabel.setFont(new Font("Ariel", Font.BOLD, 18));
+        postcodeLabel.setFont(Satoshi);
         JTextField postcodeField = new JTextField(); // Defines the field.
-        postcodeField.setFont(new Font("Ariel", Font.PLAIN, 18));
+        postcodeField.setFont(Satoshi);
         postcodeField.setBackground(new Color(255,255,255));
         postcodeField.setPreferredSize(new Dimension(200,25));
 
         JLabel dataLabel = new JLabel("Enter Co2 Data (Kg): ");
         dataLabel.setFont(new Font("Ariel",Font.BOLD,18));
         JTextField dataField = new JTextField(); //Defines the field.
-        dataField.setFont(new Font("Ariel", Font.PLAIN, 18));
+        dataField.setFont(Satoshi);
         dataField.setBackground(new Color(255,255,255));
         dataField.setPreferredSize(new Dimension(200,25));
 
