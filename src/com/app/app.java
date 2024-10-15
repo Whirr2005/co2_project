@@ -1,5 +1,9 @@
 package com.app;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
 // Imports for making a window and the elements inside said window
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +12,9 @@ import java.awt.event.ActionListener;
 
 //importing the other class for inserting and connecting
 import com.app.config.DatabaseConnector;
+
+import com.app.MapPanel.*;
+
 //importing font
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -19,7 +26,7 @@ public class app {
 
     public static void main(String[] args) {
 
-            JFrame frame;
+        JFrame frame;
         final RoundedTextField userIdField = new RoundedTextField();
         final RoundedTextField postcodeField = new RoundedTextField();
         final RoundedTextField dataField = new RoundedTextField();
@@ -77,12 +84,18 @@ public class app {
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBackground(new Color(240, 240, 240)); // Sets Background Of Bottom Panel.
             JButton submitButton = new JButton("Submit");
+            JButton mapButton = new JButton("View Map");
+            mapButton.setFont(new Font("Arial", Font.BOLD, 24)); // Font Size
+            mapButton.setBackground(new Color(10, 25, 86));
+            mapButton.setForeground(new Color(255, 255, 255));
+            mapButton.setPreferredSize(new Dimension(200, 40));
             submitButton.setFont(new Font("Arial", Font.BOLD, 24)); // Font Size
             submitButton.setBackground(new Color(10, 25, 86));
             submitButton.setForeground(new Color(255, 255, 255));
             submitButton.setPreferredSize(new Dimension(200, 40));
             submitButton.setHorizontalAlignment(SwingConstants.CENTER);
             buttonPanel.add(submitButton);
+            buttonPanel.add(mapButton);
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
             frame.getContentPane().add(Box.createVerticalStrut(20), BorderLayout.PAGE_END); // Strut Size
             frame.getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
@@ -124,6 +137,12 @@ public class app {
                     JOptionPane.showMessageDialog(frame, "An unexpected error occurred: " + ex.getMessage());
                 }
             });
+
+             mapButton.addActionListener(e -> {
+                 MapPanel.create();
+
+
+             });
 
         frame.setSize(600, 400); // Decreased frame size
         frame.setLocationRelativeTo(null); // Centers the frame on the screen
