@@ -13,29 +13,33 @@ class MapPanel extends JPanel {
     private BufferedImage mapImage; // To hold the map image
     private ArrayList<Point> positions; // To store points that will be plotted
 
-    // Approximate map boundaries based on the new center
-    private final double CENTER_LAT = 54.02505809693575; // Center latitude
-    private final double CENTER_LON = -4.567324686395687; // Center longitude
-    private final double LAT_SPAN = 10.8967; // Latitude range from top to bottom (approximate for the UK)
-    private final double LON_SPAN = 10.4154; // Longitude range from left to right (approximate for the UK)
+    // World Map bounds
+    private final double MIN_LAT = -90.0; // Minimum latitude
+    private final double MAX_LAT = 90.0;  // Maximum latitude
+    private final double MIN_LON = -180.0; // Minimum longitude
+    private final double MAX_LON = 180.0;  // Maximum longitude
+    private final int map_width = 1600;  // Maximum longitude
+    private final int map_height = 800;  // Maximum longitude
+    private final int map_offset_x = 200;  // Maximum longitude
 
-    // Reference geographical point and its screen position (to refine scale)
-    private final double REF_LAT = 53.31748153231636; // Latitude of the reference point (e.g., Manchester)
-    private final double REF_LON = -4.673911415757596; // Longitude of the reference point
-    private final int REF_SCREEN_X = 373;     // Screen X position of the reference point
-    private final int REF_SCREEN_Y = 424;     // Screen Y position of the reference point
-
-    // Predefined latitude/longitude coordinates (example points in the UK)
+    // Predefined positions (UK outline)
     private final double[][] predefinedLatLon = {
-            {51.41156386364611, -2.5266483505178243},    // London
-            {53.59942565838064, -8.744305657887962},     // Manchester
-            {55.935256239963024, -3.185745200085697}     // Edinburgh
+            {51.5074, -0.1278},  // London
+            {52.4862, -1.8904},  // Birmingham
+            {53.4808, -2.2426},  // Manchester
+            {53.4084, -2.9916},  // Liverpool
+            {55.9533, -3.1883},  // Edinburgh
+            {55.8642, -4.2518},  // Glasgow
+            {54.5973, -5.9301},  // Belfast
+            {51.4816, -3.1791},   // Cardiff
+            {-1.289798175528336, 32.93535678638415}, // eye of aftrica
+            {41.556458030741055, -97.53642771952767}//USA BABYYYY
     };
 
     public MapPanel() {
         // Load the map image
         try {
-            mapImage = ImageIO.read(new File("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\uk-countries.png")); // Update this path as necessary
+            mapImage = ImageIO.read(new File("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\world-map.jpg")); // Update this path as necessary
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,13 +57,9 @@ class MapPanel extends JPanel {
                 // Convert the clicked screen coordinates to geographical coordinates
                 double[] latLon = convertXYToLatLon(x, y);
 
-                // Convert geographical coordinates back to screen coordinates
-                double[] geoPoint = convertLatLonToXY(latLon[0], latLon[1]);
-
                 // Print the required outputs
                 System.out.println("Screen coordinates: (" + x + ", " + y + ")");
                 System.out.println("Geographical coordinates: (" + latLon[0] + ", " + latLon[1] + ")");
-                System.out.println("Geo coordinates converted into Screen coordinates: (" + geoPoint[0] + ", " + geoPoint[1] + ")");
 
                 // Add the clicked point to the positions list as a geographical point
                 positions.add(new Point(x, y)); // Store the screen position
@@ -70,42 +70,26 @@ class MapPanel extends JPanel {
         });
     }
 
-    // Method to convert latitude/longitude to screen coordinates based on new map center and reference point
+    // Method to convert latitude/longitude to screen coordinates based on the world map
     private double[] convertLatLonToXY(double lat, double lon) {
-        int mapWidth = getWidth();   // Width of the displayed map
-        int mapHeight = getHeight(); // Height of the displayed map
+        int mapWidth = map_width;   // Width of the displayed map
+        int mapHeight = map_height; // Height of the displayed map
 
-        // First, calculate the relative screen position based on the map's width and height
-        double x = (((lon - CENTER_LON) / LON_SPAN) * mapWidth);
-        double y = (((CENTER_LAT - lat) / LAT_SPAN) * mapHeight);
-
-        // Calculate reference point offsets
-        double refX = (((REF_LON - CENTER_LON) / LON_SPAN) * mapWidth);
-        double refY = (((CENTER_LAT - REF_LAT) / LAT_SPAN) * mapHeight);
-
-        // Adjust based on reference point screen position
-        x += (REF_SCREEN_X - refX);
-        y += (REF_SCREEN_Y - refY);
+        // Map latitude and longitude to pixel coordinates
+        double x = (lon + 180.0 ) * (mapWidth / 360.0) -200; // Convert longitude to pixel x
+        double y = (90.0 - lat) * (mapHeight / 180.0); // Convert latitude to pixel y
 
         return new double[]{x, y}; // Return the point in screen coordinates
     }
 
     // Method to convert screen coordinates to latitude/longitude
     private double[] convertXYToLatLon(int x, int y) {
-        int mapWidth = getWidth();   // Width of the displayed map
-        int mapHeight = getHeight(); // Height of the displayed map
+        int mapWidth = map_width;   // Width of the displayed map
+        int mapHeight = map_height; // Height of the displayed map
 
-        // Calculate reference point offsets
-        double refX = (((REF_LON - CENTER_LON) / LON_SPAN) * mapWidth);
-        double refY = (((CENTER_LAT - REF_LAT) / LAT_SPAN) * mapHeight);
-
-        // Adjust screen coordinates relative to the reference point
-        x -= (REF_SCREEN_X - refX);
-        y -= (REF_SCREEN_Y - refY);
-
-        // Calculate longitude and latitude based on adjusted screen coordinates
-        double lon = (x / (double) mapWidth) * LON_SPAN + CENTER_LON;
-        double lat = CENTER_LAT - (y / (double) mapHeight) * LAT_SPAN;
+        // Map pixel coordinates back to latitude and longitude
+        double lon = ((x+200) / (double) mapWidth ) * 360.0 - 180.0; // Convert pixel x to longitude
+        double lat = 90.0 - (y / (double) mapHeight) * 180.0; // Convert pixel y to latitude
 
         return new double[]{lat, lon}; // Return the geographical coordinates
     }
@@ -115,10 +99,10 @@ class MapPanel extends JPanel {
         super.paintComponent(g);
         // Draw the map image
         if (mapImage != null) {
-            g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
+            g.drawImage(mapImage, -200, 0, map_width, map_height, this);
         }
 
-        // Plot predefined positions (convert them to screen coordinates here)
+        // Plot predefined positions (UK outline)
         g.setColor(Color.BLUE); // Color for predefined points
         for (double[] latLon : predefinedLatLon) {
             double[] screenCoords = convertLatLonToXY(latLon[0], latLon[1]);
@@ -134,9 +118,9 @@ class MapPanel extends JPanel {
 
     // Static method to create and show the frame with the map
     static void create() {
-        JFrame newframe = new JFrame("Map Plotter");
+        JFrame newframe = new JFrame("World Map Plotter");
         newframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        newframe.setSize(800, 800); // Frame size: 800x800
+        newframe.setSize(400, 400); // Adjust frame size as needed
         newframe.setLocationRelativeTo(null); // Center the frame on the screen
         newframe.setResizable(false);
 
