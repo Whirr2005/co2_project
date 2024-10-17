@@ -20,15 +20,15 @@ class MapPanel extends JPanel {
     private final double LON_SPAN = 10.4154; // Longitude range from left to right (approximate for the UK)
 
     // Reference geographical point and its screen position (to refine scale)
-    private final double REF_LAT = 53.483959; // Latitude of the reference point (e.g., Manchester)
-    private final double REF_LON = -2.244644; // Longitude of the reference point
-    private final int REF_SCREEN_X = 345;     // Screen X position of the reference point
-    private final int REF_SCREEN_Y = 124;     // Screen Y position of the reference point
+    private final double REF_LAT = 53.31748153231636; // Latitude of the reference point (e.g., Manchester)
+    private final double REF_LON = -4.673911415757596; // Longitude of the reference point
+    private final int REF_SCREEN_X = 373;     // Screen X position of the reference point
+    private final int REF_SCREEN_Y = 424;     // Screen Y position of the reference point
 
     // Predefined latitude/longitude coordinates (example points in the UK)
     private final double[][] predefinedLatLon = {
             {51.41156386364611, -2.5266483505178243},    // London
-            {53.49259345417181, -2.258080035641775},     // Manchester
+            {53.59942565838064, -8.744305657887962},     // Manchester
             {55.935256239963024, -3.185745200085697}     // Edinburgh
     };
 
@@ -76,16 +76,16 @@ class MapPanel extends JPanel {
         int mapHeight = getHeight(); // Height of the displayed map
 
         // First, calculate the relative screen position based on the map's width and height
-        int x = (int) (((lon - CENTER_LON) / LON_SPAN) * mapWidth + (mapWidth / 2));
-        int y = (int) ((-1 * (lat - CENTER_LAT) / LAT_SPAN) * mapHeight + (mapHeight / 2));
+        double x = (((lon - CENTER_LON) / LON_SPAN) * mapWidth);
+        double y = (((CENTER_LAT - lat) / LAT_SPAN) * mapHeight);
 
-        // Calculate the offset based on the reference point
-        double refLatOffset = (REF_LAT - CENTER_LAT) / LAT_SPAN * mapHeight;
-        double refLonOffset = (REF_LON - CENTER_LON) / LON_SPAN * mapWidth;
+        // Calculate reference point offsets
+        double refX = (((REF_LON - CENTER_LON) / LON_SPAN) * mapWidth);
+        double refY = (((CENTER_LAT - REF_LAT) / LAT_SPAN) * mapHeight);
 
-        // Adjust x and y based on how far the reference point is from the screen center
-        x += (REF_SCREEN_X - (int) refLonOffset);
-        y += (REF_SCREEN_Y - (int) refLatOffset);
+        // Adjust based on reference point screen position
+        x += (REF_SCREEN_X - refX);
+        y += (REF_SCREEN_Y - refY);
 
         return new double[]{x, y}; // Return the point in screen coordinates
     }
@@ -95,9 +95,17 @@ class MapPanel extends JPanel {
         int mapWidth = getWidth();   // Width of the displayed map
         int mapHeight = getHeight(); // Height of the displayed map
 
-        // Calculate longitude and latitude based on screen coordinates
-        double lon = ((x - (mapWidth / 2)) / (double) mapWidth) * LON_SPAN + CENTER_LON;
-        double lat = ((mapHeight / 2 - y) / (double) mapHeight) * LAT_SPAN + CENTER_LAT;
+        // Calculate reference point offsets
+        double refX = (((REF_LON - CENTER_LON) / LON_SPAN) * mapWidth);
+        double refY = (((CENTER_LAT - REF_LAT) / LAT_SPAN) * mapHeight);
+
+        // Adjust screen coordinates relative to the reference point
+        x -= (REF_SCREEN_X - refX);
+        y -= (REF_SCREEN_Y - refY);
+
+        // Calculate longitude and latitude based on adjusted screen coordinates
+        double lon = (x / (double) mapWidth) * LON_SPAN + CENTER_LON;
+        double lat = CENTER_LAT - (y / (double) mapHeight) * LAT_SPAN;
 
         return new double[]{lat, lon}; // Return the geographical coordinates
     }
