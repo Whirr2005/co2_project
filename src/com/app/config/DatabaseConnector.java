@@ -32,8 +32,8 @@ public class DatabaseConnector {
     }
 
     // write to table in db
-    public static boolean insertData(int column1Value, String column2Value, String column3Value) {
-        String sql = "INSERT INTO data_table (user_id, postcode, data) VALUES (?, ?, ?)";
+    public static boolean insertData(int column1Value, String column2Value, String column3Value, String column4Value) {
+        String sql = "INSERT INTO data_table (user_id, postcode, data, timeStamp) VALUES (?, ?, ?, ?)";
         boolean isInserted = false; // used to check if it worked
 
         try (Connection connection = connect();
@@ -49,6 +49,7 @@ public class DatabaseConnector {
             preparedStatement.setInt(1, column1Value);
             preparedStatement.setString(2, column2Value);
             preparedStatement.setString(3, column3Value);
+            preparedStatement.setString(4, column4Value);
             int rowsAffected = preparedStatement.executeUpdate();
 
             // print inserted successfully

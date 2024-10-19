@@ -2,6 +2,7 @@ package com.app;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 // Imports for making a window and the elements inside said window
@@ -110,6 +111,9 @@ public class app {
                     DataHandler.USERID = Integer.parseInt(userIdField.getText());
                     DataHandler.POSTCODE = postcodeField.getText();
                     DataHandler.DATA = dataField.getText();
+                    //get current time
+                    LocalDateTime LDTime = java.time.LocalDateTime.now();//get current time
+                    String timeStamp = LDTime.toString();
 
                     //check if fields are empty
                     if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
@@ -117,7 +121,7 @@ public class app {
                         JOptionPane.showMessageDialog(frame, "All fields are required");
                     } else {
                         // insert data as all fields are full
-                        boolean success = DatabaseConnector.insertData(DataHandler.USERID, DataHandler.POSTCODE, DataHandler.DATA);
+                        boolean success = DatabaseConnector.insertData(DataHandler.USERID, DataHandler.POSTCODE, DataHandler.DATA, timeStamp);
 
                         // pop up with result
                         if (success) {
@@ -202,7 +206,7 @@ class roundedButton extends JButton {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Background color (change it to your desired button background)
-        g2.setColor(Color.decode("#8ebbff")); // Light gray background color
+        g2.setColor(Color.decode("#f4a3a6")); // background color
         g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), RADIUS, RADIUS)); // Draw rounded rectangle
 
         super.paintComponent(g);  // Paint button text

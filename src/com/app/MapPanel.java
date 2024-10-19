@@ -150,12 +150,12 @@ class MapPanel extends JPanel {
 
         // Create buttons
         JButton backButton = new roundedButton("Back");
-        JButton other = new roundedButton("Other?");
+        JButton refreshButton = new roundedButton("Refresh?");
         JButton dlButton = new roundedButton("Download CSV");
 
 
         setButtonAttributes(backButton);
-        setButtonAttributes(other);
+        setButtonAttributes(refreshButton);
         setButtonAttributes(dlButton);
 
 
@@ -170,7 +170,7 @@ class MapPanel extends JPanel {
 
         // Add buttons to the panel
         buttonPanel.add(backButton);
-        buttonPanel.add(other);
+        buttonPanel.add(refreshButton);
         buttonPanel.add(dlButton);
 
 
