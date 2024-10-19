@@ -54,7 +54,7 @@ class MapPanel extends JPanel {
 
         // Load the UK map
         try {
-            ukMapImage = ImageIO.read(new File("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\uk-map.png")); // Adjust path
+            ukMapImage = ImageIO.read(new File("src/main/resources/images/uk-map.png")); // Adjust path
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,9 +157,9 @@ class MapPanel extends JPanel {
         setButtonAttributes(dlButton);
 
         // Load images as ImageIcons
-        ImageIcon backImage = new ImageIcon("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\backButton.png"); // Replace with your image path
-        ImageIcon refreshImage = new ImageIcon("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\refreshButton.png"); // Replace with your image path
-        ImageIcon dlImage = new ImageIcon("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\downloadButton.png"); // Replace with your image path
+        ImageIcon backImage = new ImageIcon("src/main/resources/images/backButton.png"); // Replace with your image path
+        ImageIcon refreshImage = new ImageIcon("src/main/resources/images/refreshButton.png"); // Replace with your image path
+        ImageIcon dlImage = new ImageIcon("src/main/resources/images/downloadButton.png"); // Replace with your image path
 
         Image tmpImage = backImage.getImage();
         backImage = new ImageIcon(tmpImage.getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH));
