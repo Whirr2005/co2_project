@@ -10,9 +10,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.app.FontLoader;
 import com.app.postcodeCoords;
+import com.app.config.DatabaseConnector;
 
 class MapPanel extends JPanel {
     private BufferedImage ukMapImage;    // uk map image
@@ -31,27 +33,24 @@ class MapPanel extends JPanel {
     private final double UK_LEFT_LON = -10.4415;
     private final double UK_RIGHT_LON = 1.76297;
 
-    // Predefined positions (UK outline and more)
-    private final double[][] predefinedLatLon = {
-            //for testing plotting points
-            {51.5074, -0.1278},  // London
-            {52.4862, -1.8904},  // Birmingham
-            {53.4808, -2.2426},  // Manchester
-            {53.4084, -2.9916},  // Liverpool
-            {55.9533, -3.1883},  // Edinburgh
-            {55.8642, -4.2518},  // Glasgow
-            {54.5973, -5.9301},  // Belfast
-            {51.4816, -3.1791},   // Cardiff
-            {50.081587108944056, -5.640682437188373} // Cornwall
-    };
 
     public MapPanel() {
 
-        double[] coordinates = postcodeCoords.getCoords("BS15 9QU");
-        if (coordinates != null) {
-            System.out.println(coordinates[0]+","+coordinates[1]);
-        } else {
-            System.out.println("Coordinates could not be retrieved.");
+        positions = new ArrayList<>(); // init list of positions
+
+
+
+        // Reading data from the table "data_table"
+        List<String[]> data = DatabaseConnector.readData("data_table");
+
+        // Print the results
+        for (String[] row : data) {
+            System.out.print(row[2]);
+            double[] coordinates = postcodeCoords.getCoords(row[2]);
+
+            double[] xyCoords = convertLatLonToXY(coordinates[0], coordinates[1]);
+            positions.add(new Point((int)xyCoords[0], (int)xyCoords[1]));
+            System.out.println();
         }
 
 
@@ -62,23 +61,6 @@ class MapPanel extends JPanel {
             e.printStackTrace();
         }
 
-        positions = new ArrayList<>(); // init list of positions
-
-        // mouse listener for clicks
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                double[] latLon = convertXYToLatLon(x, y);
-
-                System.out.println("Screen coordinates: (" + x + ", " + y + ")");
-                System.out.println("Geographical coordinates: (" + latLon[0] + ", " + latLon[1] + ")");
-
-                positions.add(new Point(x, y)); // Store the screen position
-                repaint();
-            }
-        });
     }
 
     // convert lat/long to x y coordinates using world map variables
@@ -118,22 +100,16 @@ class MapPanel extends JPanel {
             g.drawImage(ukMapImage, (int) ukTopLeft[0], (int) ukTopLeft[1], ukScreenWidth, ukScreenHeight, this);
         }
 
-        // plot predefined positions
-        g.setColor(Color.decode("#f4a3a6")); // Color for predefined points
-        for (double[] latLon : predefinedLatLon) {
-            double[] screenCoords = convertLatLonToXY(latLon[0], latLon[1]);
-            g.fillOval((int) screenCoords[0] - 5, (int) screenCoords[1] - 5, 15, 15); // Draw a circle for each point
-        }
-
         // plot clicked positions
-        g.setColor(Color.decode("#8ef2e4")); // Color for clicked points
+        g.setColor(Color.decode("#f4a3a6")); // Color for clicked points
         for (Point position : positions) {
-            g.fillOval(position.x - 5, position.y - 5, 10, 10); // Draw a circle for each point
+            g.fillOval(position.x - 5, position.y - 5, 15, 15); // Draw a circle for each point
         }
     }
 
     // create method called from app.java
     static void create() {
+
         JFrame mapWindow = new JFrame("UK Map Plotter");
         mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //only removes map window
         mapWindow.setSize(700, 800); // Adjust frame size as needed

@@ -1,9 +1,8 @@
 package com.app.config;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseConnector {
 
@@ -17,7 +16,7 @@ public class DatabaseConnector {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // connect to db
+            // Connect to the database
             connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
             if (connection != null) {
                 System.out.println("Connected to the database!");
@@ -31,28 +30,28 @@ public class DatabaseConnector {
         return connection;
     }
 
-    // write to table in db
+    // Method to write data into the database
     public static boolean insertData(int column1Value, String column2Value, String column3Value, String column4Value) {
         String sql = "INSERT INTO data_table (user_id, postcode, data, timeStamp) VALUES (?, ?, ?, ?)";
-        boolean isInserted = false; // used to check if it worked
+        boolean isInserted = false;
 
         try (Connection connection = connect();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            // check connection is successful
+            // Check if connection was successful
             if (connection == null) {
                 System.out.println("Connection failed. No data was inserted.");
                 return false;
             }
 
-            // prepared statement values
+            // Set prepared statement values
             preparedStatement.setInt(1, column1Value);
             preparedStatement.setString(2, column2Value);
             preparedStatement.setString(3, column3Value);
             preparedStatement.setString(4, column4Value);
+
             int rowsAffected = preparedStatement.executeUpdate();
 
-            // print inserted successfully
             if (rowsAffected > 0) {
                 System.out.println("Data inserted successfully!");
                 isInserted = true;
@@ -66,5 +65,37 @@ public class DatabaseConnector {
         }
 
         return isInserted;
+    }
+
+    // Method to read data from the table
+    public static List<String[]> readData(String tableName) {
+        List<String[]> dataList = new ArrayList<>();
+
+        String sql = "SELECT * FROM " + tableName;
+
+        try (Connection connection = connect();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            // Get metadata to dynamically fetch column count
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // Iterate through the result set and add each row to the data list
+            while (resultSet.next()) {
+                String[] row = new String[columnCount];
+
+                // For each column, store the value in the row array
+                for (int i = 1; i <= columnCount; i++) {
+                    row[i - 1] = resultSet.getString(i);
+                }
+                dataList.add(row);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQL Error: " + e.getMessage());
+        }
+
+        return dataList;
     }
 }
