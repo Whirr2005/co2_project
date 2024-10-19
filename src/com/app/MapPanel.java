@@ -184,6 +184,15 @@ class MapPanel extends JPanel {
             mapWindow.dispose();
         });
 
+        // Add dlButton functionality for downloading CSV
+        dlButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call the method to save the table as a CSV file
+                DatabaseConnector.saveTableToCSV("data_table");
+            }
+        });
+
         // Add buttons to the panel
         buttonPanel.add(backButton);
         buttonPanel.add(refreshButton);

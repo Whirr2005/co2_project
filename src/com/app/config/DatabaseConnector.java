@@ -3,6 +3,14 @@ package com.app.config;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 public class DatabaseConnector {
 
@@ -97,5 +105,67 @@ public class DatabaseConnector {
         }
 
         return dataList;
+    }
+    // New method to save table data as CSV
+    public static void saveTableToCSV(String tableName) {
+        Connection connection = connect();
+        if (connection == null) {
+            JOptionPane.showMessageDialog(null, "Failed to connect to the database!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Prepare a file chooser dialog to save the file
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save CSV File");
+
+        // Set a default file name
+        fileChooser.setSelectedFile(new File("table_data.csv"));
+
+        // Show the dialog and check if the user approves the selection
+        int userSelection = fileChooser.showSaveDialog(null);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File csvFile = fileChooser.getSelectedFile();
+
+            // SQL query to retrieve all data from the table
+            String query = "SELECT * FROM " + tableName;
+
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(query);
+                 FileWriter csvWriter = new FileWriter(csvFile)) {
+
+                // Write column headers to the CSV file
+                int columnCount = resultSet.getMetaData().getColumnCount();
+                for (int i = 1; i <= columnCount; i++) {
+                    csvWriter.append(resultSet.getMetaData().getColumnName(i));
+                    if (i < columnCount) {
+                        csvWriter.append(",");
+                    }
+                }
+                csvWriter.append("\n");
+
+                // Write rows to the CSV file
+                while (resultSet.next()) {
+                    for (int i = 1; i <= columnCount; i++) {
+                        csvWriter.append(resultSet.getString(i));
+                        if (i < columnCount) {
+                            csvWriter.append(",");
+                        }
+                    }
+                    csvWriter.append("\n");
+                }
+
+                JOptionPane.showMessageDialog(null, "Data saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error saving CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                try {
+                    connection.close(); // Close the connection
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
