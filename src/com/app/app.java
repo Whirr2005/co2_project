@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import com.app.config.DatabaseConnector;
 
 import com.app.MapPanel.*;
+import com.app.FontLoader;
 
 //importing font
 import java.awt.Font;
@@ -50,24 +51,27 @@ public class app {
             frame.setLayout(new BorderLayout());
 
             // Sets Background White.
-            frame.getContentPane().setBackground(new Color(240, 240, 240)); // Sets background colour.
+            frame.getContentPane().setBackground(Color.decode("#24293e")); // Sets background colour.
 
 
             // Changes the attributes of boxes.
 
             JLabel userIdLabel = new JLabel("Enter User Id:");
-            userIdField.setBackground(new Color(255, 255, 255));
+            userIdField.setBackground(Color.decode("#f4f5fc"));
             userIdField.setPreferredSize(new Dimension(200, 25)); // sets width
-            userIdLabel.setFont(Satoshi);
+            userIdLabel.setFont(FontLoader.getSatoshiFont(28f));
+            userIdLabel.setForeground(Color.decode("#f4f5fc"));
 
             JLabel postcodeLabel = new JLabel("Enter Postcode:");
-            postcodeField.setBackground(new Color(255, 255, 255));
+            postcodeField.setBackground(Color.decode("#f4f5fc"));
             postcodeField.setPreferredSize(new Dimension(200, 25)); // sets width
-            postcodeLabel.setFont(Satoshi);
+            postcodeLabel.setFont(FontLoader.getSatoshiFont(18f));
+            postcodeLabel.setForeground(Color.decode("#f4f5fc"));
 
             JLabel dataLabel = new JLabel("CO2 Data (kg):");
-            dataLabel.setFont(Satoshi);
-            dataField.setBackground(new Color(255, 255, 255));
+            dataLabel.setFont(FontLoader.getSatoshiFont(18f));
+            dataLabel.setForeground(Color.decode("#f4f5fc"));
+            dataField.setBackground(Color.decode("#f4f5fc"));
             dataField.setPreferredSize(new Dimension(200, 25)); // sets width
 
             JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10)); // Grid Gap
@@ -77,19 +81,17 @@ public class app {
             panel.add(postcodeField);
             panel.add(dataLabel);
             panel.add(dataField);
-            panel.setBackground(new Color(240, 240, 240)); //
+            panel.setBackground(Color.decode("#24293e")); //
             panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Margins
             frame.add(panel, BorderLayout.CENTER);
 
             JPanel buttonPanel = new JPanel();
-            buttonPanel.setBackground(new Color(240, 240, 240)); // Sets Background Of Bottom Panel.
-            JButton submitButton = new JButton("Submit");
-            JButton mapButton = new JButton("View Map");
-            mapButton.setFont(new Font("Arial", Font.BOLD, 24)); // Font Size
+            buttonPanel.setBackground(Color.decode("#24293e")); // Sets Background Of Bottom Panel.
+            JButton submitButton = new roundedButton("Submit");
+            JButton mapButton = new roundedButton("View Map");
             mapButton.setBackground(new Color(10, 25, 86));
             mapButton.setForeground(new Color(255, 255, 255));
             mapButton.setPreferredSize(new Dimension(200, 40));
-            submitButton.setFont(new Font("Arial", Font.BOLD, 24)); // Font Size
             submitButton.setBackground(new Color(10, 25, 86));
             submitButton.setForeground(new Color(255, 255, 255));
             submitButton.setPreferredSize(new Dimension(200, 40));
@@ -164,7 +166,7 @@ class RoundedTextField extends JTextField {
         super();
         setOpaque(false);  // Make background transparent
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding
-        setFont(new Font("Arial", Font.PLAIN, 16)); // Font style
+        setFont(FontLoader.getSatoshiFont(18f)); // Font style
         setForeground(Color.DARK_GRAY); // Text color
     }
 
@@ -179,8 +181,39 @@ class RoundedTextField extends JTextField {
         super.paintComponent(g);  // Paint the text
     }
 
+}
+class roundedButton extends JButton {
+    private static final int RADIUS = 25;  // Rounded corner radius
+
+    public roundedButton(String text) {
+        super(text);
+        setOpaque(false);  // Make background transparent
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding
+        setFont(FontLoader.getSatoshiFont(22f)); // Font style
+        setForeground(Color.DARK_GRAY); // Text color
+        setContentAreaFilled(false); // Remove default button background
+        setFocusPainted(false); // Remove focus border
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        // Create rounded rectangle shape
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Background color (change it to your desired button background)
+        g2.setColor(Color.decode("#8ebbff")); // Light gray background color
+        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), RADIUS, RADIUS)); // Draw rounded rectangle
+
+        super.paintComponent(g);  // Paint button text
+    }
+
     @Override
     protected void paintBorder(Graphics g) {
-        // No border painting
+        // Optionally, paint a border around the button
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.GRAY); // Border color
+        g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, RADIUS, RADIUS)); // Draw rounded border
     }
 }

@@ -2,12 +2,17 @@ package com.app;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.util.ArrayList;
+
+import com.app.FontLoader;
+import com.app.postcodeCoords;
 
 class MapPanel extends JPanel {
     private BufferedImage ukMapImage;    // uk map image
@@ -41,6 +46,15 @@ class MapPanel extends JPanel {
     };
 
     public MapPanel() {
+
+        double[] coordinates = postcodeCoords.getCoords("BS15 9QU");
+        if (coordinates != null) {
+            System.out.println(coordinates[0]+","+coordinates[1]);
+        } else {
+            System.out.println("Coordinates could not be retrieved.");
+        }
+
+
         // load the uk map
         try {
             ukMapImage = ImageIO.read(new File("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\uk-map.png")); // Adjust path
@@ -92,7 +106,7 @@ class MapPanel extends JPanel {
 
         // place uk map in correct position based on the furthest points of uk
         if (ukMapImage != null) {
-            // chnage geo coordinates to screen coords (x,y)
+            // change geo coordinates to screen coords (x,y)
             double[] ukTopLeft = convertLatLonToXY(UK_TOP_LAT, UK_LEFT_LON);
             double[] ukBottomRight = convertLatLonToXY(UK_BOTTOM_LAT, UK_RIGHT_LON);
 
@@ -120,16 +134,61 @@ class MapPanel extends JPanel {
 
     // create method called from app.java
     static void create() {
-        JFrame newframe = new JFrame("UK Map Plotter");
-        newframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        newframe.setSize(700, 800); // Adjust frame size as needed
-        newframe.setLocationRelativeTo(null); // Center the frame on the screen
-        newframe.setResizable(false);
+        JFrame mapWindow = new JFrame("UK Map Plotter");
+        mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //only removes map window
+        mapWindow.setSize(700, 800); // Adjust frame size as needed
+        mapWindow.setLocationRelativeTo(null); // Center the frame on the screen
+        mapWindow.setResizable(false);
 
         // create the mapPanel
         MapPanel mapPanel = new MapPanel();
-        newframe.add(mapPanel);
 
-        newframe.setVisible(true);
+        // Create a panel for the buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(Color.decode("#24293e"));
+
+        // Create buttons
+        JButton backButton = new roundedButton("Back");
+        JButton other = new roundedButton("Other?");
+        JButton dlButton = new roundedButton("Download CSV");
+
+
+        setButtonAttributes(backButton);
+        setButtonAttributes(other);
+        setButtonAttributes(dlButton);
+
+
+        // Add back button functionality
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Close the current frame (dispose the window)
+                mapWindow.dispose();
+            }
+        });
+
+        // Add buttons to the panel
+        buttonPanel.add(backButton);
+        buttonPanel.add(other);
+        buttonPanel.add(dlButton);
+
+
+        // Add components to the frame
+        mapWindow.setLayout(new BorderLayout());
+        mapWindow.add(mapPanel, BorderLayout.CENTER);  // Map panel in the center
+        mapWindow.add(buttonPanel, BorderLayout.SOUTH); // Buttons at the bottom
+
+        mapWindow.setVisible(true);
     }
+    // Helper method to set the attributes
+    public static void setButtonAttributes(JButton button) {
+        //sets the width of the button to be 100 larger then the width of the text
+        button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+100, 85));
+        button.setFont(FontLoader.getSatoshiFont(28f));
+        button.setForeground(Color.decode("#24293e"));
+        button.setBackground(Color.decode("#8ebbff"));
+    }
+
+
 }
