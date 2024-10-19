@@ -149,14 +149,33 @@ class MapPanel extends JPanel {
         buttonPanel.setBackground(Color.decode("#24293e"));
 
         // Create buttons
-        JButton backButton = new roundedButton("Back");
-        JButton refreshButton = new roundedButton("Refresh?");
-        JButton dlButton = new roundedButton("Download CSV");
+        JButton backButton = new roundedButton("");
+        JButton refreshButton = new roundedButton("");
+        JButton dlButton = new roundedButton("");
 
 
         setButtonAttributes(backButton);
         setButtonAttributes(refreshButton);
+        refreshButton.setPreferredSize(new Dimension(refreshButton.getFontMetrics(refreshButton.getFont()).stringWidth(refreshButton.getText())+130, 80));
         setButtonAttributes(dlButton);
+
+        // Load images as ImageIcons
+        ImageIcon backImage = new ImageIcon("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\backButton.png"); // Replace with your image path
+        ImageIcon refreshImage = new ImageIcon("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\refreshButton.png"); // Replace with your image path
+        ImageIcon dlImage = new ImageIcon("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\downloadButton.png"); // Replace with your image path
+
+        Image tmpImage = backImage.getImage();
+        backImage = new ImageIcon(tmpImage.getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH));
+
+        tmpImage = refreshImage.getImage();
+        refreshImage = new ImageIcon(tmpImage.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH));
+
+        tmpImage = dlImage.getImage();
+        dlImage = new ImageIcon(tmpImage.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
+// Set the icon on the buttons
+        backButton.setIcon(backImage);
+        refreshButton.setIcon(refreshImage);
+        dlButton.setIcon(dlImage);
 
 
         // Add back button functionality
@@ -184,7 +203,7 @@ class MapPanel extends JPanel {
     // Helper method to set the attributes
     public static void setButtonAttributes(JButton button) {
         //sets the width of the button to be 100 larger then the width of the text
-        button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+100, 85));
+        button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+130, 60));
         button.setFont(FontLoader.getSatoshiFont(28f));
         button.setForeground(Color.decode("#24293e"));
         button.setBackground(Color.decode("#8ebbff"));

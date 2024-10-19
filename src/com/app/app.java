@@ -187,7 +187,7 @@ class RoundedTextField extends JTextField {
 
 }
 class roundedButton extends JButton {
-    private static final int RADIUS = 25;  // Rounded corner radius
+    private static final int RADIUS = 15;  // Rounded corner radius
 
     public roundedButton(String text) {
         super(text);
@@ -206,7 +206,7 @@ class roundedButton extends JButton {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Background color (change it to your desired button background)
-        g2.setColor(Color.decode("#f4a3a6")); // background color
+        g2.setColor(Color.decode("#97b9f9")); // background color
         g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), RADIUS, RADIUS)); // Draw rounded rectangle
 
         super.paintComponent(g);  // Paint button text
@@ -217,7 +217,7 @@ class roundedButton extends JButton {
         // Optionally, paint a border around the button
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(Color.GRAY); // Border color
+        g2.setColor(Color.decode("#97b9f9")); // Border color
         g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, RADIUS, RADIUS)); // Draw rounded border
     }
 }
