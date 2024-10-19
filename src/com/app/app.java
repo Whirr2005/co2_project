@@ -111,6 +111,7 @@ public class app {
                     DataHandler.USERID = Integer.parseInt(userIdField.getText());
                     DataHandler.POSTCODE = postcodeField.getText();
                     DataHandler.DATA = dataField.getText();
+
                     //get current time
                     LocalDateTime LDTime = java.time.LocalDateTime.now();//get current time
                     String timeStamp = LDTime.toString();
@@ -119,7 +120,11 @@ public class app {
                     if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
                         //feedback and don't save to db
                         JOptionPane.showMessageDialog(frame, "All fields are required");
-                    } else {
+                    }
+                    else if(postcodeCoords.getCoords(DataHandler.POSTCODE) == null) {
+                        JOptionPane.showMessageDialog(frame, "postcode not valid");
+                    }
+                    else {
                         // insert data as all fields are full
                         boolean success = DatabaseConnector.insertData(DataHandler.USERID, DataHandler.POSTCODE, DataHandler.DATA, timeStamp);
 

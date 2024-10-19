@@ -43,7 +43,7 @@ public class postcodeCoords {
 
                 return new double[]{latitude, longitude};
             } else {
-                System.out.println("Error: Unable to find the coordinates.");
+                return null;
             }
         } catch (IOException | JSONException e) {
             System.out.println("Error: " + e.getMessage());

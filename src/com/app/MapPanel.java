@@ -17,15 +17,15 @@ import com.app.postcodeCoords;
 import com.app.config.DatabaseConnector;
 
 class MapPanel extends JPanel {
-    private BufferedImage ukMapImage;    // uk map image
-    private ArrayList<Point> positions;  // array for points to be plotted
+    private BufferedImage ukMapImage;  // UK map image
+    private ArrayList<PointData> positions;  // List to store points and associated row data
 
-    // full world dimensions for use calculating lat and long
+    // Full world dimensions for use in calculating lat and long
     private final int map_width = 15000;
     private final int map_height = 10500;
-    //offsets for moving the uk area into frame
-    private final int map_offset_x = 6980; // higher number moves uk left
-    private final int map_offset_y = 1750; // higher number moves uk up
+    // Offsets for moving the UK area into frame
+    private final int map_offset_x = 6980; // Higher number moves UK left
+    private final int map_offset_y = 1750; // Higher number moves UK up
 
     // UK bounds (approximate)
     private final double UK_TOP_LAT = 59.586128178;
@@ -33,37 +33,59 @@ class MapPanel extends JPanel {
     private final double UK_LEFT_LON = -10.4415;
     private final double UK_RIGHT_LON = 1.76297;
 
+    // Proximity radius to detect clicks near points
+    private final int POINT_RADIUS = 15;
 
     public MapPanel() {
-
-        positions = new ArrayList<>(); // init list of positions
-
-
+        positions = new ArrayList<>(); // Init list of points and associated data
 
         // Reading data from the table "data_table"
         List<String[]> data = DatabaseConnector.readData("data_table");
-
-        // Print the results
+        // Save results
         for (String[] row : data) {
-            System.out.print(row[2]);
             double[] coordinates = postcodeCoords.getCoords(row[2]);
 
             double[] xyCoords = convertLatLonToXY(coordinates[0], coordinates[1]);
-            positions.add(new Point((int)xyCoords[0], (int)xyCoords[1]));
-            System.out.println();
+            Point point = new Point((int) xyCoords[0], (int) xyCoords[1]);
+
+            // Store the point and its associated data
+            positions.add(new PointData(point, row[2], row[3], row[4]));
         }
 
-
-        // load the uk map
+        // Load the UK map
         try {
             ukMapImage = ImageIO.read(new File("C:\\Users\\mrfoo\\IdeaProjects\\co2_project\\src\\uk-map.png")); // Adjust path
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        // Add a mouse listener for detecting clicks
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point clickedPoint = e.getPoint();
+                for (PointData positionData : positions) {
+                    if (isPointClicked(clickedPoint, positionData.getPoint())) {
+                        // Show the associated data in a message dialog
+                        String message = "Postcode: " + positionData.getPostcode() + "\n"
+                                + "Data: " + positionData.getData() + "\n"
+                                + "Timestamp: " + positionData.getTimestamp();
+                        JOptionPane.showMessageDialog(null, message, "Point Data", JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                }
+            }
+        });
     }
 
-    // convert lat/long to x y coordinates using world map variables
+    // Method to check if a click is near a plotted point (using proximity radius)
+    private boolean isPointClicked(Point click, Point point) {
+        int dx = click.x - point.x;
+        int dy = click.y - point.y;
+        return Math.sqrt(dx * dx + dy * dy) <= POINT_RADIUS;
+    }
+
+    // Convert lat/long to x y coordinates using world map variables
     private double[] convertLatLonToXY(double lat, double lon) {
         double x = (lon + 180.0) * (map_width / 360.0) - map_offset_x;
         double y = (90.0 - lat) * (map_height / 180.0) - map_offset_y;
@@ -71,7 +93,7 @@ class MapPanel extends JPanel {
         return new double[]{x, y};
     }
 
-    //  screen coordinates to lat/long by doing the reverse of previous
+    // Screen coordinates to lat/long by doing the reverse of previous
     private double[] convertXYToLatLon(int x, int y) {
         double lon = ((x + map_offset_x) / (double) map_width) * 360.0 - 180.0;
         double lat = 90.0 - ((y + map_offset_y) / (double) map_height) * 180.0;
@@ -83,40 +105,40 @@ class MapPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // set background
+        // Set background
         setBackground(Color.decode("#24293e"));
 
-        // place uk map in correct position based on the furthest points of uk
+        // Place UK map in the correct position based on the furthest points of UK
         if (ukMapImage != null) {
-            // change geo coordinates to screen coords (x,y)
+            // Change geo coordinates to screen coords (x, y)
             double[] ukTopLeft = convertLatLonToXY(UK_TOP_LAT, UK_LEFT_LON);
             double[] ukBottomRight = convertLatLonToXY(UK_BOTTOM_LAT, UK_RIGHT_LON);
 
-            // width and height of the uk map on the screen
+            // Width and height of the UK map on the screen
             int ukScreenWidth = (int) (ukBottomRight[0] - ukTopLeft[0]);
             int ukScreenHeight = (int) (ukBottomRight[1] - ukTopLeft[1]);
 
-            // draw uk-map image
+            // Draw UK map image
             g.drawImage(ukMapImage, (int) ukTopLeft[0], (int) ukTopLeft[1], ukScreenWidth, ukScreenHeight, this);
         }
 
-        // plot clicked positions
+        // Plot clicked positions
         g.setColor(Color.decode("#f4a3a6")); // Color for clicked points
-        for (Point position : positions) {
+        for (PointData positionData : positions) {
+            Point position = positionData.getPoint();
             g.fillOval(position.x - 5, position.y - 5, 15, 15); // Draw a circle for each point
         }
     }
 
-    // create method called from app.java
+    // Create method called from app.java
     static void create() {
-
         JFrame mapWindow = new JFrame("UK Map Plotter");
-        mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //only removes map window
+        mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Only removes map window
         mapWindow.setSize(700, 800); // Adjust frame size as needed
         mapWindow.setLocationRelativeTo(null); // Center the frame on the screen
         mapWindow.setResizable(false);
 
-        // create the mapPanel
+        // Create the mapPanel
         MapPanel mapPanel = new MapPanel();
 
         // Create a panel for the buttons
@@ -128,7 +150,6 @@ class MapPanel extends JPanel {
         JButton backButton = new roundedButton("");
         JButton refreshButton = new roundedButton("");
         JButton dlButton = new roundedButton("");
-
 
         setButtonAttributes(backButton);
         setButtonAttributes(refreshButton);
@@ -148,26 +169,25 @@ class MapPanel extends JPanel {
 
         tmpImage = dlImage.getImage();
         dlImage = new ImageIcon(tmpImage.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
-// Set the icon on the buttons
+
+        // Set the icon on the buttons
         backButton.setIcon(backImage);
         refreshButton.setIcon(refreshImage);
         dlButton.setIcon(dlImage);
 
-
         // Add back button functionality
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Close the current frame (dispose the window)
-                mapWindow.dispose();
-            }
+        backButton.addActionListener(e -> mapWindow.dispose());
+
+        // Add refresh button functionality
+        refreshButton.addActionListener(e -> {
+            create();
+            mapWindow.dispose();
         });
 
         // Add buttons to the panel
         buttonPanel.add(backButton);
         buttonPanel.add(refreshButton);
         buttonPanel.add(dlButton);
-
 
         // Add components to the frame
         mapWindow.setLayout(new BorderLayout());
@@ -176,14 +196,45 @@ class MapPanel extends JPanel {
 
         mapWindow.setVisible(true);
     }
+
     // Helper method to set the attributes
     public static void setButtonAttributes(JButton button) {
-        //sets the width of the button to be 100 larger then the width of the text
+        // Set the width of the button to be 100 larger than the width of the text
         button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+130, 60));
         button.setFont(FontLoader.getSatoshiFont(28f));
         button.setForeground(Color.decode("#24293e"));
         button.setBackground(Color.decode("#8ebbff"));
     }
-
-
 }
+
+// Helper class to store the point and its associated data
+class PointData {
+    private Point point;
+    private String postcode;
+    private String data;
+    private String timestamp;
+
+    public PointData(Point point, String postcode, String data, String timestamp) {
+        this.point = point;
+        this.postcode = postcode;
+        this.data = data;
+        this.timestamp = timestamp;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+}
+
