@@ -10,16 +10,16 @@ public class FontLoader {
 
     static {
         try {
-            // Load Satoshi font from the file once
+            //get font from ttf file
             satoshiFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/Satoshi-Variable.ttf"));
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(satoshiFont);  // Register the font
+            ge.registerFont(satoshiFont);  // create (register) font
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Method to get the font with a specific size
+    //function to set font at a set size
     public static Font getSatoshiFont(float size) {
         return satoshiFont != null ? satoshiFont.deriveFont(size) : new Font("Arial", Font.PLAIN, (int) size);
     }
