@@ -141,7 +141,7 @@ class MapPanel extends JPanel {
 
         setButtonAttributes(backButton);
         setButtonAttributes(refreshButton);
-        refreshButton.setPreferredSize(new Dimension(refreshButton.getFontMetrics(refreshButton.getFont()).stringWidth(refreshButton.getText())+130, 80));
+        refreshButton.setPreferredSize(new Dimension(refreshButton.getFontMetrics(refreshButton.getFont()).stringWidth(refreshButton.getText())+180, 90));
         setButtonAttributes(dlButton);
 
         //load icon images
@@ -193,7 +193,7 @@ class MapPanel extends JPanel {
     //button styling function
     public static void setButtonAttributes(JButton button) {
         //set button width 100 larger then content
-        button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+100, 60));
+        button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+100, 75));
         button.setFont(FontLoader.getSatoshiFont(28f));
         button.setForeground(Color.decode("#24293e"));
         button.setBackground(Color.decode("#8ebbff"));
