@@ -94,10 +94,10 @@ public class app {
                     //check if fields are empty
                     if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
                         //feedback and don't save to db
-                        JOptionPane.showMessageDialog(frame, "All fields are required");
+                        StyledFrames.newPopup("All fields are required", "Error");
                     }
                     else if(postcodeCoords.getCoords(DataHandler.POSTCODE) == null) {
-                        JOptionPane.showMessageDialog(frame, "postcode not valid");
+                        StyledFrames.newPopup("postcode not valid", "Error");
                     }
                     else {
                         // insert data as all fields are full
@@ -105,10 +105,10 @@ public class app {
 
                         // pop up with result
                         if (success) {
-                            JOptionPane.showMessageDialog(frame, "Data inserted successfully!");
+                            StyledFrames.newPopup("Data inserted successfully!", "Success");
                         } else {
                             //something went wrong with inserting
-                            JOptionPane.showMessageDialog(frame, "Error inserting data. Please try again.");
+                            StyledFrames.newPopup( "Error inserting data. Please try again.", "Error");
                         }
                     }
 
@@ -117,10 +117,10 @@ public class app {
                     postcodeField.setText("");
                     dataField.setText("");
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(frame, "Please enter a valid integer for user_id.");
+                    StyledFrames.newPopup("Please enter a valid integer for user_id.", "Error");
                 } catch (Exception ex) {
                     // if any errors occur they will go in this pop up
-                    JOptionPane.showMessageDialog(frame, "An unexpected error occurred: " + ex.getMessage());
+                    StyledFrames.newPopup("An unexpected error occurred: " + ex.getMessage(), "Error");
                 }
             });
 

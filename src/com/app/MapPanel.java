@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.app.config.DatabaseConnector;
+import com.app.StyledFrames;
 
 class MapPanel extends JPanel {
     private BufferedImage ukMapImage;  //uk map image
@@ -31,7 +32,7 @@ class MapPanel extends JPanel {
             //set new point on the map at converted coords
             Point point = new Point((int) xyCoords[0], (int) xyCoords[1]);
             //store point and data
-            positions.add(new PointData(point, row[2], row[3], row[4]));
+            positions.add(new PointData(point, row[2], row[3], row[4], row[1]));
         }
 
         //load uk map
@@ -49,10 +50,12 @@ class MapPanel extends JPanel {
                 for (PointData positionData : positions) {
                     if (isPointClicked(clickedPoint, positionData.point())) {
                         // show data in pop up
-                        String message = "Postcode: " + positionData.postcode() + "\n"
-                                + "Data: " + positionData.data() + "\n"
-                                + "Timestamp: " + positionData.timestamp();
-                        JOptionPane.showMessageDialog(null, message, "Point Data", JOptionPane.INFORMATION_MESSAGE);
+                        String message = "\nPostcode: " + positionData.postcode() + "\n"
+                                + "User ID: "+positionData.userID()+"\n"
+                                +"Data: " + positionData.data() + "PPM (Parts Per Million)\n"
+                                //formats time stamp into a eay to read format
+                                + "Timestamp: " + positionData.timestamp().substring(5,7)+"/"+positionData.timestamp().substring(8,10)+"/"+positionData.timestamp().substring(0,4);
+                        StyledFrames.newPopup(message, "Point Data");
                         break;
                     }
                 }
@@ -201,6 +204,6 @@ class MapPanel extends JPanel {
 }
 
 // class for point coords and its info
-record PointData(Point point, String postcode, String data, String timestamp) {
+record PointData(Point point, String postcode, String data, String timestamp, String userID) {
 }
 
