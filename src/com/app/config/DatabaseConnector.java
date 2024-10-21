@@ -1,5 +1,7 @@
 package com.app.config;
 
+import com.app.StyledFrames;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +116,7 @@ public class DatabaseConnector {
     public static void saveTableToCSV(String tableName) {
         Connection connection = connect();
         if (connection == null) {
-            JOptionPane.showMessageDialog(null, "Failed to connect to the database!", "Error", JOptionPane.ERROR_MESSAGE);
+            StyledFrames.newPopup("Failed to connect to the database!:" + JOptionPane.ERROR_MESSAGE, "Error");
             return;
         }
 
@@ -158,10 +160,10 @@ public class DatabaseConnector {
                     csvWriter.append("\n");
                 }
 
-                JOptionPane.showMessageDialog(null, "Data saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                StyledFrames.newPopup( "Data saved successfully!", "Success");
 
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error saving CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                StyledFrames.newPopup("Error saving CSV: " + e.getMessage(), "Error");
             } finally {
                 try {
                     connection.close(); //close connection

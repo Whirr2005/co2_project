@@ -8,7 +8,7 @@ import com.app.FontLoader;
 
 //class for creating many similar popup windows
 public class StyledFrames {
-    static void newPopup(String sentContent, String title) {
+    public static void newPopup(String sentContent, String title) {
         JFrame popupWindow = new JFrame(title);
         popupWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close (dispose only does the current) window
         popupWindow.setSize(500, 300);

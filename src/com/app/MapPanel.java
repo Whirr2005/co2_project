@@ -123,7 +123,7 @@ class MapPanel extends JPanel {
 
     // method to call in app.java
     static void create() {
-        JFrame mapWindow = new JFrame("UK Map Plotter");
+        JFrame mapWindow = new JFrame("Co2 Data Visualiser Map Diagram");
         mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close (dispose only does the current) window
         mapWindow.setSize(700, 800);
         mapWindow.setLocationRelativeTo(null);
