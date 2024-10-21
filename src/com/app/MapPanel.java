@@ -111,7 +111,7 @@ class MapPanel extends JPanel {
         }
 
         // plot positions
-        g.setColor(Color.decode("#f4a3a6")); // Color for clicked points
+        g.setColor(Color.decode("#f4a3a6")); //color of  points
         for (PointData positionData : positions) {
             Point position = positionData.point();
             g.fillOval(position.x - 5, position.y - 5, 15, 15); // Draw a circle for each point
@@ -121,20 +121,20 @@ class MapPanel extends JPanel {
     // method to call in app.java
     static void create() {
         JFrame mapWindow = new JFrame("UK Map Plotter");
-        mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Only removes map window
-        mapWindow.setSize(700, 800); // Adjust frame size as needed
-        mapWindow.setLocationRelativeTo(null); // Center the frame on the screen
+        mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close (dispose only does the current) window
+        mapWindow.setSize(700, 800);
+        mapWindow.setLocationRelativeTo(null);
         mapWindow.setResizable(false);
 
-        // Create the mapPanel
+        //create panel for map
         MapPanel mapPanel = new MapPanel();
 
-        // Create a panel for the buttons
+        //panel for buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setBackground(Color.decode("#24293e"));
 
-        // Create buttons
+        //buttons
         JButton backButton = new roundedButton("");
         JButton refreshButton = new roundedButton("");
         JButton dlButton = new roundedButton("");
@@ -144,64 +144,63 @@ class MapPanel extends JPanel {
         refreshButton.setPreferredSize(new Dimension(refreshButton.getFontMetrics(refreshButton.getFont()).stringWidth(refreshButton.getText())+130, 80));
         setButtonAttributes(dlButton);
 
-        // Load images as ImageIcons
-        ImageIcon backImage = new ImageIcon("src/main/resources/images/backButton.png"); // Replace with your image path
-        ImageIcon refreshImage = new ImageIcon("src/main/resources/images/refreshButton.png"); // Replace with your image path
-        ImageIcon dlImage = new ImageIcon("src/main/resources/images/downloadButton.png"); // Replace with your image path
+        //load icon images
+        //in main/recorces to make paths work on teammates laptops
+        ImageIcon backImage = new ImageIcon("src/main/resources/images/backButton.png");
+        ImageIcon refreshImage = new ImageIcon("src/main/resources/images/refreshButton.png");
+        ImageIcon dlImage = new ImageIcon("src/main/resources/images/downloadButton.png");
 
+        //image sizing
         Image tmpImage = backImage.getImage();
         backImage = new ImageIcon(tmpImage.getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH));
-
         tmpImage = refreshImage.getImage();
         refreshImage = new ImageIcon(tmpImage.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH));
-
         tmpImage = dlImage.getImage();
         dlImage = new ImageIcon(tmpImage.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH));
 
-        // Set the icon on the buttons
+        //place icon on buttons
         backButton.setIcon(backImage);
         refreshButton.setIcon(refreshImage);
         dlButton.setIcon(dlImage);
 
-        // Add back button functionality
-        backButton.addActionListener(_ -> mapWindow.dispose());
+        //back button function
+        backButton.addActionListener(_ -> mapWindow.dispose()); //closes window
 
-        // Add refresh button functionality
+        //refresh button function
         refreshButton.addActionListener(_ -> {
             create();
             mapWindow.dispose();
         });
 
-        // Add dlButton functionality for downloading CSV
+        //call download button function
         dlButton.addActionListener(_ -> {
             // Call the method to save the table as a CSV file
             DatabaseConnector.saveTableToCSV("data_table");
         });
 
-        // Add buttons to the panel
+        //add buttons to panel
         buttonPanel.add(backButton);
         buttonPanel.add(refreshButton);
         buttonPanel.add(dlButton);
 
-        // Add components to the frame
+        //add to frame
         mapWindow.setLayout(new BorderLayout());
-        mapWindow.add(mapPanel, BorderLayout.CENTER);  // Map panel in the center
-        mapWindow.add(buttonPanel, BorderLayout.SOUTH); // Buttons at the bottom
-
+        mapWindow.add(mapPanel, BorderLayout.CENTER);
+        mapWindow.add(buttonPanel, BorderLayout.SOUTH);
         mapWindow.setVisible(true);
     }
 
-    // Helper method to set the attributes
+    //button styling function
     public static void setButtonAttributes(JButton button) {
-        // Set the width of the button to be 100 larger than the width of the text
-        button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+130, 60));
+        //set button width 100 larger then content
+        button.setPreferredSize(new Dimension(button.getFontMetrics(button.getFont()).stringWidth(button.getText())+100, 60));
         button.setFont(FontLoader.getSatoshiFont(28f));
         button.setForeground(Color.decode("#24293e"));
         button.setBackground(Color.decode("#8ebbff"));
     }
 }
 
-// Helper class to store the point and its associated data
+// class for point coords and its info
 record PointData(Point point, String postcode, String data, String timestamp) {
 }
 

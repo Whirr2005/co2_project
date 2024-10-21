@@ -9,19 +9,20 @@ import org.json.JSONObject;
 public class postcodeCoords {
 
     public static double[] getCoords(String postcode) {
-        // Remove hardcoded postcode
+        //set postcode to uppercase to make sure its format is correct
         postcode = postcode.toUpperCase();
-        String apiKey = "AIzaSyAwT8rf08-7uZk2EIMC11TQNFQoaLRFmM4";  // Replace with your Google Maps API Key
+        //free api key from google cloud
+        String apiKey = "AIzaSyAwT8rf08-7uZk2EIMC11TQNFQoaLRFmM4";
         try {
-            // Build the URL for the Google Maps API request
+            //put url together
             String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(postcode, "UTF-8") + "&key=" + apiKey;
 
-            // Create URL object and open a connection
+            //url object, open connection
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
 
-            // Read the response
+            //get response
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
@@ -30,7 +31,7 @@ public class postcodeCoords {
             }
             in.close();
 
-            // Parse the JSON response to get the latitude and longitude
+            //get latitude and longitude from json
             JSONObject jsonObj = new JSONObject(response.toString());
             if ("OK".equalsIgnoreCase(jsonObj.getString("status"))) {
                 JSONObject location = jsonObj.getJSONArray("results")
@@ -43,13 +44,13 @@ public class postcodeCoords {
 
                 return new double[]{latitude, longitude};
             } else {
-                return null;
+                return null; //null if the postcode was invalid or other error
             }
         } catch (IOException | JSONException e) {
             System.out.println("Error: " + e.getMessage());
         }
 
-        // Return null in case of an error
+        //error handling
         return null;
     }
 }
