@@ -35,7 +35,7 @@ public class app {
             postcodeLabel.setFont(FontLoader.getSatoshiFont(18f));
             postcodeLabel.setForeground(Color.decode("#f4f5fc"));
             //co2 data readings
-            JLabel dataLabel = new JLabel("CO2 Data (kg):");
+            JLabel dataLabel = new JLabel("CO2 Data (PPM):");
             dataLabel.setFont(FontLoader.getSatoshiFont(18f));
             dataLabel.setForeground(Color.decode("#f4f5fc"));
             dataField.setBackground(Color.decode("#f4f5fc"));
