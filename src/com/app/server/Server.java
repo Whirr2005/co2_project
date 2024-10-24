@@ -1,86 +1,80 @@
 package com.app.server;
 
+import com.app.config.DatabaseConnector;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Server {
 
-    private static JTextArea textArea; // Text area for displaying server logs
-
     public static void main(String[] args) {
-        // Create and show the server window
+
         JFrame frame = new JFrame("Server");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        // Create a text area to display server messages
-        textArea = new JTextArea();
+
+        JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         frame.add(scrollPane, BorderLayout.CENTER);
 
-        // Show the window
+
         frame.setVisible(true);
 
-        // Start the server
-        startServer();
-    }
-
-    private static void startServer() {
-        int port = 12345;
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            appendText("Server is listening on port " + port);
+        final int PORT = 12345; //localhost:12345
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            appendText("Server is running and waiting for clients on port " + PORT, textArea);
 
             while (true) {
-                Socket socket = serverSocket.accept();
-                appendText("New client connected");
+                try (Socket clientSocket = serverSocket.accept();
+                     ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+                     ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
-                // Handle client in a new thread
-                new ClientHandler(socket).start();
+                    appendText("Connected to client.", textArea);
+
+                    // Read the client's request (e.g., "insert" or "read")
+                    String operation = (String) in.readObject();
+
+                    if ("insert".equals(operation)) {
+                        // Receive data for insertion
+                        int userId = in.readInt();
+                        String postcode = (String) in.readObject();
+                        String data = (String) in.readObject();
+                        String timestamp = (String) in.readObject();
+
+                        // Insert data into the database
+                        boolean success = DatabaseConnector.insertData(userId, postcode, data, timestamp);
+                        out.writeBoolean(success);
+                        out.flush();
+                        if (success) {
+                            appendText("Data inserted", textArea);
+                        }
+                        else appendText("Data not inserted", textArea);
+                    } else if ("read".equals(operation)) {
+                        // Fetch data from the database
+                        List<String[]> dataList = DatabaseConnector.readData("data_table");
+                        out.writeObject(dataList);  // Send data to client
+                        out.flush();
+                    }
+                } catch (Exception e) {
+                    appendText("Error with client connection: " + e.getMessage(), textArea);
+                }
             }
-
         } catch (IOException e) {
-            appendText("Error in the server: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    // Method to append text to the JTextArea
-    private static void appendText(String message) {
+    private static void appendText(String message, JTextArea textArea) {
         textArea.append(message + "\n");
         textArea.setCaretPosition(textArea.getDocument().getLength()); // Scroll to the bottom
     }
 
-    // ClientHandler class to handle multiple clients in separate threads
-    private static class ClientHandler extends Thread {
-        private final Socket socket;
 
-        public ClientHandler(Socket socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-            try (InputStream input = socket.getInputStream();
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
-
-                String message;
-                while ((message = reader.readLine()) != null) {
-                    appendText("Received from client: " + message);
-                }
-
-            } catch (IOException e) {
-                appendText("Error with client: " + e.getMessage());
-            } finally {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    appendText("Error closing client connection: " + e.getMessage());
-                }
-            }
-        }
-    }
 }
