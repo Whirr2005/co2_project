@@ -3,6 +3,8 @@ package com.app;
 import java.time.LocalDateTime;
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.net.Socket;
 import com.app.config.DatabaseConnector;
 import java.awt.geom.RoundRectangle2D;
 
@@ -82,44 +84,45 @@ public class app {
             //run on submit
             submitButton.addActionListener(_ -> {
                 try {
-                    // get input values from feilds
-                    DataHandler.USERID = Integer.parseInt(userIdField.getText());
-                    DataHandler.POSTCODE = postcodeField.getText();
-                    DataHandler.DATA = dataField.getText();
+                    // Collect user input
+                    int userId = Integer.parseInt(userIdField.getText());
+                    String postcode = postcodeField.getText();
+                    String data = dataField.getText();
+                    LocalDateTime currentTime = LocalDateTime.now();
+                    String timestamp = currentTime.toString();
 
-                    //get current time
-                    LocalDateTime LDTime = java.time.LocalDateTime.now();//get current time
-                    String timeStamp = LDTime.toString();
+                    // Send data to the server
+                    try (Socket socket = new Socket("localhost", 12345);
+                         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                         ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-                    //check if fields are empty
-                    if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
-                        //feedback and don't save to db
-                        StyledFrames.newPopup("All fields are required", "Error");
-                    }
-                    else if(postcodeCoords.getCoords(DataHandler.POSTCODE) == null) {
-                        StyledFrames.newPopup("postcode not valid", "Error");
-                    }
-                    else {
-                        // insert data as all fields are full
-                        boolean success = DatabaseConnector.insertData(DataHandler.USERID, DataHandler.POSTCODE, DataHandler.DATA, timeStamp);
+                        // Send insert operation to server
+                        out.writeObject("insert");
+                        out.writeInt(userId);
+                        out.writeObject(postcode);
+                        out.writeObject(data);
+                        out.writeObject(timestamp);
+                        out.flush();
 
-                        // pop up with result
+                        // Get response from server
+                        boolean success = in.readBoolean();
+
+                        // Show feedback to user
                         if (success) {
                             StyledFrames.newPopup("Data inserted successfully!", "Success");
                         } else {
-                            //something went wrong with inserting
-                            StyledFrames.newPopup( "Error inserting data. Please try again.", "Error");
+                            StyledFrames.newPopup("Error inserting data. Please try again.", "Error");
                         }
                     }
 
-                    // set input boxes to empty
+                    // Clear input fields
                     userIdField.setText("");
                     postcodeField.setText("");
                     dataField.setText("");
+
                 } catch (NumberFormatException ex) {
                     StyledFrames.newPopup("Please enter a valid integer for user_id.", "Error");
                 } catch (Exception ex) {
-                    // if any errors occur they will go in this pop up
                     StyledFrames.newPopup("An unexpected error occurred: " + ex.getMessage(), "Error");
                 }
             });
