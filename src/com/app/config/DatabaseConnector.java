@@ -15,21 +15,22 @@ import javax.swing.JOptionPane;
 
 public class DatabaseConnector {
 
-    //database login information
-    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/co2_readings";
-    private static final String DATABASE_USERNAME = "root";
-    private static final String DATABASE_PASSWORD = ""; // Leave blank if there is no password
+    // Azure SQL Database login information
+    private static final String DATABASE_URL = "jdbc:sqlserver://sqlreadings.database.windows.net:1433;database=ReadingsDB;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30";
+    private static final String DATABASE_USERNAME = "sqlAdmin@sqlreadings"; // Replace with your Azure SQL username
+    private static final String DATABASE_PASSWORD = "Password1!";           // Replace with your Azure SQL password
 
     public static Connection connect() {
         Connection connection = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Load the SQL Server JDBC driver
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
-            //connect to database
+            // Connect to the Azure SQL Database
             connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
             if (connection != null) {
-                System.out.println("Connected to the database!");
+                System.out.println("Connected to the Azure SQL Database!");
             }
         } catch (SQLException e) {
             System.err.println("Connection failed: " + e.getMessage());
