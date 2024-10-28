@@ -8,55 +8,111 @@ import java.net.Socket;
 import com.app.config.DatabaseConnector;
 import java.awt.geom.RoundRectangle2D;
 
-public class app {
+    public class app {
 
-    public static void main(String[] args) {
+        // Main method
+        public static void main(String[] args) {
+            // Call the login method to display the login screen
+            showLoginScreen();
+        }
 
-        JFrame frame;
-        //entry fields
-        final RoundedTextField userIdField = new RoundedTextField();
-        final RoundedTextField postcodeField = new RoundedTextField();
-        final RoundedTextField dataField = new RoundedTextField();
+        // Method to display the login screen
+        private static void showLoginScreen() {
+            // Create a login frame
+            JFrame loginFrame = new JFrame("Login");
+            loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            loginFrame.setLayout(new GridLayout(3, 2, 10, 10));
 
-            // creates JFrame
-            frame = new JFrame("Co2 Program Input data");
+            // Create user ID and port number input fields
+            JLabel userIdLabel = new JLabel("User ID:");
+            RoundedTextField userIdField = new RoundedTextField();
+            JLabel portLabel = new JLabel("Port Number:");
+            RoundedTextField portField = new RoundedTextField();
+
+            // Create login button
+            JButton loginButton = new roundedButton("Login");
+
+            // Add components to the login frame
+            loginFrame.add(userIdLabel);
+            loginFrame.add(userIdField);
+            loginFrame.add(portLabel);
+            loginFrame.add(portField);
+            loginFrame.add(new JLabel()); // Empty cell for layout spacing
+            loginFrame.add(loginButton);
+
+            // Set frame properties
+            loginFrame.setSize(400, 200);
+            loginFrame.setLocationRelativeTo(null);  // Center the frame
+            loginFrame.setVisible(true);
+
+            // Add login button action listener
+            loginButton.addActionListener(e -> {
+                try {
+                    // Get user input
+                    int userId = Integer.parseInt(userIdField.getText());
+                    int port = Integer.parseInt(portField.getText());
+
+                    // Close the login window
+                    loginFrame.dispose();
+
+                    // Show the main input window
+                    showMainWindow(userId, port);
+
+                } catch (NumberFormatException ex) {
+                    // Show error message if the input is invalid
+                    JOptionPane.showMessageDialog(loginFrame, "Please enter valid values for User ID and Port Number.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+        }
+
+        // Method to display the main window (after login)
+        private static void showMainWindow(int userId, int port) {
+            JFrame frame;
+            final RoundedTextField postcodeField = new RoundedTextField();
+            final RoundedTextField dataField = new RoundedTextField();
+
+            // Creates JFrame
+            frame = new JFrame("CO2 Program Input Data");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setLayout(new BorderLayout());
 
-            //style fields and labels
-            //user id
-            JLabel userIdLabel = new JLabel("Enter User Id:");
-            userIdField.setBackground(Color.decode("#f4f5fc"));
-            userIdField.setPreferredSize(new Dimension(200, 25)); // sets width
+            // Style fields and labels
+            JLabel userIdLabel = new JLabel("User ID: " + userId);  // Display the user ID from login
             userIdLabel.setFont(FontLoader.getSatoshiFont(28f));
             userIdLabel.setForeground(Color.decode("#f4f5fc"));
-            //postcode
+
+            JLabel portLabel = new JLabel("Port Number: " +port);  // Display the user ID from login
+            portLabel.setFont(FontLoader.getSatoshiFont(28f));
+            portLabel.setForeground(Color.decode("#f4f5fc"));
+
+
+            // Postcode
             JLabel postcodeLabel = new JLabel("Enter Postcode:");
             postcodeField.setBackground(Color.decode("#f4f5fc"));
-            postcodeField.setPreferredSize(new Dimension(200, 25)); // sets width
+            postcodeField.setPreferredSize(new Dimension(200, 25)); // Sets width
             postcodeLabel.setFont(FontLoader.getSatoshiFont(18f));
             postcodeLabel.setForeground(Color.decode("#f4f5fc"));
-            //co2 data readings
+
+            // CO2 data readings
             JLabel dataLabel = new JLabel("CO2 Data (PPM):");
             dataLabel.setFont(FontLoader.getSatoshiFont(18f));
             dataLabel.setForeground(Color.decode("#f4f5fc"));
             dataField.setBackground(Color.decode("#f4f5fc"));
-            dataField.setPreferredSize(new Dimension(200, 25)); // sets width
+            dataField.setPreferredSize(new Dimension(200, 25)); // Sets width
 
-            //creates panel
-            JPanel Inputpanel = new JPanel(new GridLayout(3, 2, 10, 10)); // Grid Gap
-            Inputpanel.add(userIdLabel);
-            Inputpanel.add(userIdField);
+            // Creates panel
+            JPanel Inputpanel = new JPanel(new GridLayout(3, 2, 10, 10)); // Grid gap
+            Inputpanel.add(userIdLabel);  // displayed user id
+            Inputpanel.add(portLabel); // port label
             Inputpanel.add(postcodeLabel);
             Inputpanel.add(postcodeField);
             Inputpanel.add(dataLabel);
             Inputpanel.add(dataField);
             Inputpanel.setBackground(Color.decode("#24293e"));
-            //panel margins
             Inputpanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
             frame.add(Inputpanel, BorderLayout.CENTER);
 
-            //second panel for the buttons
+            // Second panel for the buttons
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBackground(Color.decode("#24293e"));
             JButton submitButton = new roundedButton("Submit");
@@ -70,35 +126,33 @@ public class app {
             submitButton.setHorizontalAlignment(SwingConstants.CENTER);
             buttonPanel.add(submitButton);
             buttonPanel.add(mapButton);
-            //margins
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
             frame.getContentPane().add(Box.createVerticalStrut(20), BorderLayout.PAGE_END);
             frame.getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
 
-            //sets frame size and rules
+            // Set frame size and rules
             frame.setSize(600, 400);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
             frame.setResizable(false);
 
-            //run on submit
+            // Submit button action listener
             submitButton.addActionListener(_ -> {
                 try {
                     // Collect user input
-                    int userId = Integer.parseInt(userIdField.getText());
                     String postcode = postcodeField.getText();
                     String data = dataField.getText();
                     LocalDateTime currentTime = LocalDateTime.now();
                     String timestamp = currentTime.toString();
 
                     // Send data to the server
-                    try (Socket socket = new Socket("localhost", 12345);
+                    try (Socket socket = new Socket("localhost", port); // Use port from login
                          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                          ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
                         // Send insert operation to server
                         out.writeObject("insert");
-                        out.writeInt(userId);
+                        out.writeInt(userId);  // Use userId from login
                         out.writeObject(postcode);
                         out.writeObject(data);
                         out.writeObject(timestamp);
@@ -116,23 +170,19 @@ public class app {
                     }
 
                     // Clear input fields
-                    userIdField.setText("");
                     postcodeField.setText("");
                     dataField.setText("");
 
-                } catch (NumberFormatException ex) {
-                    StyledFrames.newPopup("Please enter a valid integer for user_id.", "Error");
                 } catch (Exception ex) {
                     StyledFrames.newPopup("An unexpected error occurred: " + ex.getMessage(), "Error");
                 }
             });
 
-
-            //mpa button action
-             mapButton.addActionListener(_ -> {
-                 //calls create() finction from MapPanel class
-                 MapPanel.create();
-             });
+            // Map button action listener
+            mapButton.addActionListener(_ -> {
+                // Calls create() function from MapPanel class
+                MapPanel.create();
+            });
         }
     }
 
