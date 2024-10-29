@@ -21,9 +21,10 @@ public class app {
         // connect to server
         try (Socket socket = new Socket(serverIP, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             // out sends the stuff to the server
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            System.out.println("Connected to the server at " + serverIP + ".");
+            System.out.println("Connected to the server at " + serverIP);
 
             //welcome message
             System.out.println(in.readLine());
@@ -31,7 +32,7 @@ public class app {
             String command;
             while (true) {
                 //user commands
-                System.out.print("Enter command (LOG or GET LOGS): ");
+                System.out.print("Enter command (LOG or GET DATA): "); // this would be done with buttons
                 try {
                     command = consoleInput.readLine();
                 } catch (IOException e) {
@@ -42,7 +43,7 @@ public class app {
 
                 if (command.equalsIgnoreCase("LOG")) {
                     System.out.print("Enter User ID: ");
-                    out.println(consoleInput.readLine());
+                    out.println(consoleInput.readLine());// sends what user enters to the server
 
                     System.out.print("Enter Postcode: ");
                     out.println(consoleInput.readLine());
@@ -52,14 +53,14 @@ public class app {
 
                     System.out.println("Server response: " + in.readLine());
 
-                } else if (command.equalsIgnoreCase("GET LOGS")) {
+                } else if (command.equalsIgnoreCase("GET DATA")) {
                     String serverResponse;
-                    System.out.println("Server logs:");
-                    while (!(serverResponse = in.readLine()).equals("END OF LOGS")) {
+                    System.out.println("CO2 data:");
+                    while (!(serverResponse = in.readLine()).equals("END OF DATA")) {
                         System.out.println(serverResponse);
                     }
                 } else {
-                    System.out.println("Invalid command. Please enter LOG or GET LOGS.");
+                    System.out.println("Invalid command. Please enter LOG or GET DATA.");
                 }
             }
 
