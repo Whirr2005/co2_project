@@ -18,7 +18,7 @@ public class DatabaseConnector {
     //database login information
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/co2_readings";
     private static final String DATABASE_USERNAME = "root";
-    private static final String DATABASE_PASSWORD = ""; // Leave blank if there is no password
+    private static final String DATABASE_PASSWORD = "";
 
     public static Connection connect() {
         Connection connection = null;
@@ -29,12 +29,12 @@ public class DatabaseConnector {
             //connect to database
             connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
             if (connection != null) {
-                System.out.println("Connected to the database!");
+                System.out.println("connected to database");
             }
         } catch (SQLException e) {
-            System.err.println("Connection failed: " + e.getMessage());
+            System.err.println("connection failed: " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            System.err.println("Driver class not found: " + e.getMessage());
+            System.err.println("driver class not found: " + e.getMessage());
         }
 
         return connection;
@@ -51,7 +51,7 @@ public class DatabaseConnector {
 
             // check connection
             if (connection == null) {
-                System.out.println("Connection failed. No data was inserted.");
+                System.out.println("connection failed");
                 return false;
             }
 
@@ -64,11 +64,11 @@ public class DatabaseConnector {
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Data inserted successfully!");
+                System.out.println("databaseConnector successfully inserted");
                 isInserted = true;
                 //succsess
             } else {
-                System.out.println("Data insertion failed.");
+                System.out.println("databaseConnector insertion failed");
                 //failed
             }
 
@@ -98,7 +98,7 @@ public class DatabaseConnector {
             while (resultSet.next()) {
                 String[] row = new String[columnCount];
 
-                //for each line in the table add the data
+                //for each line in table add data
                 for (int i = 1; i <= columnCount; i++) {
                     row[i - 1] = resultSet.getString(i);
                 }
@@ -132,14 +132,14 @@ public class DatabaseConnector {
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File csvFile = fileChooser.getSelectedFile();
 
-            // SQL to get all data from the table
+            // sql query to get all data from table
             String query = "SELECT * FROM " + tableName;
 
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(query);
                  FileWriter csvWriter = new FileWriter(csvFile)) {
 
-                //set column names in the csv file
+                //set column names in csv
                 int columnCount = resultSet.getMetaData().getColumnCount();
                 for (int i = 1; i <= columnCount; i++) {
                     csvWriter.append(resultSet.getMetaData().getColumnName(i));
@@ -149,7 +149,7 @@ public class DatabaseConnector {
                 }
                 csvWriter.append("\n");
 
-                // add data to the csv
+                // add data to csv
                 while (resultSet.next()) {
                     for (int i = 1; i <= columnCount; i++) {
                         csvWriter.append(resultSet.getString(i));

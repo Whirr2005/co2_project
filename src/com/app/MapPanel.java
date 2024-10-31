@@ -29,7 +29,7 @@ class MapPanel extends JPanel {
             assert coordinates != null;
             //convert lat lon coords into xy screen coords
             double[] xyCoords = convertLatLonToXY(coordinates[0], coordinates[1]);
-            //set new point on the map at converted coords
+            //set new point on map at converted coords
             Point point = new Point((int) xyCoords[0], (int) xyCoords[1]);
             //store point and data
             positions.add(new PointData(point, row[2], row[3], row[4], row[1]));
@@ -76,7 +76,7 @@ class MapPanel extends JPanel {
         //full world dimensions for use in calculating lat and long
         int map_width = 15000;
         int map_height = 10500;
-        //offsets for moving the uk area of map into frame
+        //offsets for moving uk area of map into frame
         int map_offset_x = 6980; // Higher number moves UK left
         int map_offset_y = 1750; // Higher number moves UK up
 
@@ -105,7 +105,7 @@ class MapPanel extends JPanel {
             double[] ukTopLeft = convertLatLonToXY(UK_TOP_LAT, UK_LEFT_LON);
             double[] ukBottomRight = convertLatLonToXY(UK_BOTTOM_LAT, UK_RIGHT_LON);
 
-            //width and height of the UK map on the screen
+            //width and height of uk map on screen
             int ukScreenWidth = (int) (ukBottomRight[0] - ukTopLeft[0]);
             int ukScreenHeight = (int) (ukBottomRight[1] - ukTopLeft[1]);
 
@@ -124,7 +124,7 @@ class MapPanel extends JPanel {
     // method to call in app.java
     static void create() {
         JFrame mapWindow = new JFrame("Co2 Data Visualiser Map Diagram");
-        mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close (dispose only does the current) window
+        mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close (dispose only does current) window
         mapWindow.setSize(700, 800);
         mapWindow.setLocationRelativeTo(null);
         mapWindow.setResizable(false);
@@ -177,7 +177,7 @@ class MapPanel extends JPanel {
 
         //call download button function
         dlButton.addActionListener(_ -> {
-            // Call the method to save the table as a CSV file
+            // call method to save table as a csv
             DatabaseConnector.saveTableToCSV("data_table");
         });
 
