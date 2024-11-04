@@ -7,8 +7,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 
 import com.app.config.DatabaseConnector;
 
@@ -175,7 +180,11 @@ class MapPanel extends JPanel {
         //call download button function
         dlButton.addActionListener(_ -> {
             // call method to save table as a csv
-            DatabaseConnector.saveTableToCSV("data_table");
+            try {
+                saveToCSV(allData);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         //add buttons to panel
@@ -197,6 +206,50 @@ class MapPanel extends JPanel {
         button.setFont(FontLoader.getSatoshiFont(28f));
         button.setForeground(Color.decode("#24293e"));
         button.setBackground(Color.decode("#8ebbff"));
+    }
+
+    public static void saveToCSV(List<String[]> allData) throws IOException {
+        // file chooser destination window set file lcoation
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save CSV File");
+
+        // default file name
+        fileChooser.setSelectedFile(new File("table_data.csv"));
+
+        int userSelection = fileChooser.showSaveDialog(null);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File csvFile = fileChooser.getSelectedFile();
+            try (FileWriter csvWriter = new FileWriter(csvFile)) {
+
+                // Define custom headers
+                String[] headers = {"id", "user_id", "postcode", "data", "timeStamp"};
+
+                // Write headers to CSV
+                for (int i = 0; i < headers.length; i++) {
+                    csvWriter.append(headers[i]);
+                    if (i < headers.length - 1) {
+                        csvWriter.append(",");
+                    }
+                }
+                csvWriter.append("\n");
+
+                // Write data rows (excluding the first row, which was used as headers)
+                for (int i = 1; i < allData.size(); i++) {
+                    String[] row = allData.get(i);
+                    for (int j = 0; j < row.length; j++) {
+                        csvWriter.append(row[j]);
+                        if (j < row.length - 1) {
+                            csvWriter.append(",");
+                        }
+                    }
+                    csvWriter.append("\n");
+                }
+
+                // Show success message
+                JOptionPane.showMessageDialog(null, "Data saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
     }
 }
 
