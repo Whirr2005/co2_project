@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import com.app.config.DatabaseConnector;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class app {
 
@@ -39,7 +41,7 @@ public class app {
         ipLabel.setFont(FontLoader.getSatoshiFont(25f));
         ipLabel.setForeground(Color.decode("#040404"));
         RoundedTextField ipField = new RoundedTextField();
-        ipField.setText("192.168.101.171");
+        ipField.setText("172.16.157.103");
         //port
         JLabel portLabel = new JLabel("Port:");
         portLabel.setPreferredSize(new Dimension(200, 25));
@@ -185,8 +187,9 @@ public class app {
                          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
                         // send data to server
-                        out.writeInt(DataHandler.USERID);
+
                         out.writeObject(DataHandler.POSTCODE);
+                        out.writeInt(DataHandler.USERID);
                         out.writeObject(DataHandler.DATA);
                         out.flush();
 
@@ -211,11 +214,44 @@ public class app {
             } catch (Exception ex) {
                 StyledFrames.newPopup("An unexpected error occurred: " + ex.getMessage(), "Error");
             }
+
         });
 
         // map button action
         mapButton.addActionListener(_ -> {
-            MapPanel.create();
+            try (Socket socket = new Socket(ipAddress, port);
+                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+                // send data to server
+                out.writeObject("GET_DATA");
+                out.flush();
+
+                List<String[]> allData = new ArrayList<>();
+                // server response
+                int Responselength = Integer.parseInt(in.readLine());
+                for (int i = 0; i < Responselength; i++) {
+                    String line = in.readLine();
+
+                    // Remove brackets and split the line by commas
+                    line = line.substring(1, line.length() - 1); // removes the square brackets
+                    String[] items = line.split(",\\s*"); // splits by comma and optional whitespace
+
+                    // Add the array directly to the list
+                    allData.add(items);
+                }
+                MapPanel.create(allData);
+
+
+
+
+
+
+            } catch (IOException e) {
+                StyledFrames.newPopup("Unable to connect to server: " + e.getMessage(), "Error");
+            }
+
+
 
         });
 

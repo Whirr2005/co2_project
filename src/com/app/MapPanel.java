@@ -11,18 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.app.config.DatabaseConnector;
-import com.app.StyledFrames;
 
 class MapPanel extends JPanel {
     private BufferedImage ukMapImage;  //uk map image
     private final ArrayList<PointData> positions;  //list for coords co2 reading data
 
 
-    public MapPanel() {
+    public MapPanel(List<String[]> data) {
         positions = new ArrayList<>(); //create list
 
-        //reading db
-        List<String[]> data = DatabaseConnector.readData("data_table");
         // save results
         for (String[] row : data) {
             double[] coordinates = postcodeCoords.getCoords(row[2]); //converting postcode from database into coords
@@ -122,7 +119,7 @@ class MapPanel extends JPanel {
     }
 
     // method to call in app.java
-    static void create() {
+    static void create(List<String[]> allData) {
         JFrame mapWindow = new JFrame("Co2 Data Visualiser Map Diagram");
         mapWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close (dispose only does current) window
         mapWindow.setSize(700, 800);
@@ -130,7 +127,7 @@ class MapPanel extends JPanel {
         mapWindow.setResizable(false);
 
         //create panel for map
-        MapPanel mapPanel = new MapPanel();
+        MapPanel mapPanel = new MapPanel(allData);
 
         //panel for buttons
         JPanel buttonPanel = new JPanel();
@@ -171,7 +168,7 @@ class MapPanel extends JPanel {
 
         //refresh button function
         refreshButton.addActionListener(_ -> {
-            create();
+            create(allData);
             mapWindow.dispose();
         });
 

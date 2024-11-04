@@ -8,6 +8,9 @@ import java.net.*;
 import java.time.LocalDateTime;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 
 public class Server {
@@ -70,25 +73,47 @@ public class Server {
         try (ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) { // Add PrintWriter to send response
 
-            // data from client
-            int userId = inputStream.readInt();
-            String postcode = (String) inputStream.readObject();
-            String co2Data = (String) inputStream.readObject();
+            String line1 = (String) inputStream.readObject();
 
-            // timestamp
-            String timeStamp = LocalDateTime.now().toString();
+            if (Objects.equals(line1, "GET_DATA")){
+                List<String[]> data = DatabaseConnector.readData("data_table");
+                logTextArea.append("GET_DATA has been called");
+                System.out.println(data.size());
+                out.println(data.size());
+                for (int i = 0; i < data.size(); i++){
+                    out.println(Arrays.toString(data.get(i)));
+                }
 
-            //inset data in database
-            boolean success = DatabaseConnector.insertData(userId, postcode, co2Data, timeStamp);
 
-            // Send response to client and log result
-            if (success) {
-                out.println("data inserted successfully");
-                logTextArea.append("data inserted successfully\n");
-            } else {
-                out.println("error inserting data");
-                logTextArea.append("Error inserting data\n");
             }
+            else{
+
+                // data from client
+                int userId = inputStream.readInt(); //line 2
+
+                String line3 = (String) inputStream.readObject();
+                String postcode = line1;
+                String co2Data = line3;
+
+                logTextArea.append("user id: "+userId+"\n"+"postcode: "+postcode+"\n"+"co2 data: "+co2Data+"\n"); //test
+                //make time stamp
+                String timeStamp = LocalDateTime.now().toString();
+
+
+
+                //inset data in database
+                boolean success = DatabaseConnector.insertData(userId, postcode, co2Data, timeStamp);
+
+                // Send response to client and log result
+                if (success) {
+                    out.println("data inserted successfully");
+                    logTextArea.append("data inserted successfully\n");
+                } else {
+                    out.println("error inserting data");
+                    logTextArea.append("Error inserting data\n");
+                }
+            }
+
 
         } catch (IOException | ClassNotFoundException e) {
             logTextArea.append("Error processing client data: " + e.getMessage() + "\n");
