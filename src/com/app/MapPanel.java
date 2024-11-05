@@ -26,11 +26,15 @@ class MapPanel extends JPanel {
         positions = new ArrayList<>(); //create list
 
         // save results
-        for (String[] row : data) {
+    for (int i = 0; i < data.size() - 1; i++) {
+            String[] row = data.get(i);
+
             double[] coordinates = postcodeCoords.getCoords(row[2]); //converting postcode from database into coords
             assert coordinates != null;
+
             //convert lat lon coords into xy screen coords
             double[] xyCoords = convertLatLonToXY(coordinates[0], coordinates[1]);
+
             //set new point on map at converted coords
             Point point = new Point((int) xyCoords[0], (int) xyCoords[1]);
             //store point and data

@@ -9,6 +9,7 @@ import com.app.config.DatabaseConnector;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+import com.app.postcodeCoords.*;
 
 public class app {
 
@@ -178,10 +179,22 @@ public class app {
                 //add tyo data handler
                 DataHandler.POSTCODE = postcodeField.getText();
                 DataHandler.DATA = dataField.getText();
+
+                double[] checkPostcode = postcodeCoords.getCoords(DataHandler.POSTCODE);
+
+
                 // validations
                 if (DataHandler.POSTCODE.isEmpty() || DataHandler.DATA.isEmpty()) {
                     StyledFrames.newPopup("All fields are required", "Error");
-                } else {
+                } else if (checkPostcode == null) {
+                    StyledFrames.newPopup("Postcode invalid", "Error");
+                    
+                } 
+                //check DataHandler.DATA is an int
+                
+                {
+                    StyledFrames.newPopup("Co2 data must be integer.", "Error");
+                }else {
                     try (Socket socket = new Socket(ipAddress, port);
                          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
