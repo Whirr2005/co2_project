@@ -175,10 +175,11 @@ public class app {
 
         // runs on submit
         submitButton.addActionListener(_ -> {
+
             try {
                 //add tyo data handler
                 DataHandler.POSTCODE = postcodeField.getText();
-                DataHandler.DATA = dataField.getText();
+                DataHandler.DATA = String.valueOf(Integer.parseInt(dataField.getText()));;
 
                 double[] checkPostcode = postcodeCoords.getCoords(DataHandler.POSTCODE);
 
@@ -189,12 +190,7 @@ public class app {
                 } else if (checkPostcode == null) {
                     StyledFrames.newPopup("Postcode invalid", "Error");
                     
-                } 
-                //check DataHandler.DATA is an int
-                
-                {
-                    StyledFrames.newPopup("Co2 data must be integer.", "Error");
-                }else {
+                } else {
                     try (Socket socket = new Socket(ipAddress, port);
                          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
@@ -213,7 +209,6 @@ public class app {
                             StyledFrames.newPopup("Data inserted successfully!", "Success");
                         } else {
                             StyledFrames.newPopup("Error inserting data. Please try again.", "Error");
-                            System.out.println("not work");
                         }
                     } catch (IOException e) {
                         StyledFrames.newPopup("Unable to connect to server: " + e.getMessage(), "Error");
@@ -224,7 +219,9 @@ public class app {
                 postcodeField.setText("");
                 dataField.setText("");
 
-            } catch (Exception ex) {
+            }catch (NumberFormatException ex) {
+                StyledFrames.newPopup("Please enter a valid integer for data.", "Error");
+            }catch (Exception ex) {
                 StyledFrames.newPopup("An unexpected error occurred: " + ex.getMessage(), "Error");
             }
 

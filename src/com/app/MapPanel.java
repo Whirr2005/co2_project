@@ -34,7 +34,6 @@ class MapPanel extends JPanel {
 
             //convert lat lon coords into xy screen coords
             double[] xyCoords = convertLatLonToXY(coordinates[0], coordinates[1]);
-
             //set new point on map at converted coords
             Point point = new Point((int) xyCoords[0], (int) xyCoords[1]);
             //store point and data

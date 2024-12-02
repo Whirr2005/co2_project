@@ -78,7 +78,6 @@ public class Server {
             if (Objects.equals(line1, "GET_DATA")){
                 List<String[]> data = DatabaseConnector.readData("data_table");
                 logTextArea.append("GET_DATA has been called");
-                System.out.println(data.size());
                 out.println(data.size());
                 for (int i = 0; i < data.size(); i++){
                     out.println(Arrays.toString(data.get(i)));
@@ -87,7 +86,6 @@ public class Server {
 
             }
             else{
-
                 // data from client
                 int userId = inputStream.readInt(); //line 2
 
@@ -95,21 +93,21 @@ public class Server {
                 String postcode = line1;
                 String co2Data = line3;
 
+
+
                 logTextArea.append("user id: "+userId+"\n"+"postcode: "+postcode+"\n"+"co2 data: "+co2Data+"\n"); //test
                 //make time stamp
                 String timeStamp = LocalDateTime.now().toString();
-
-
 
                 //inset data in database
                 boolean success = DatabaseConnector.insertData(userId, postcode, co2Data, timeStamp);
 
                 // Send response to client and log result
                 if (success) {
-                    out.println("data inserted successfully");
+                    out.println("success");
                     logTextArea.append("data inserted successfully\n");
                 } else {
-                    out.println("error inserting data");
+                    out.println("error");
                     logTextArea.append("Error inserting data\n");
                 }
             }
